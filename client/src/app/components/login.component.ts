@@ -18,12 +18,14 @@ export class LoginComponent implements OnInit{
 
   loginForm!: FormGroup
 
-  errorMessage:any = null;
+  errorMessage:any = null
+  loginError:any = null
 
   constructor(private fb: FormBuilder, private parkingSvc: ParkingService, private router: Router) { }
 
   ngOnInit(): void {
-      this.loginForm = this.createLogin(this.loginAttempt)
+    this.errorMessage = sessionStorage.getItem('errorMessage')
+    this.loginForm = this.createLogin(this.loginAttempt)
   }
 
   processLogin() {
@@ -41,7 +43,7 @@ export class LoginComponent implements OnInit{
           const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message;
           console.error(`Error message: ${constErrorMessage}`);
           console.error('>>> error: ', error)
-          this.errorMessage=String(constErrorMessage)
+          this.loginError=String(constErrorMessage)
           this.listen();
         }
         //console.info('>>> error: ', error)
@@ -52,7 +54,7 @@ export class LoginComponent implements OnInit{
     const messaging = getMessaging();
     onMessage(messaging, (payload) => {
       console.log('Message received. ', payload);
-      this.errorMessage=payload;
+      this.loginError=payload;
     });
   }
 

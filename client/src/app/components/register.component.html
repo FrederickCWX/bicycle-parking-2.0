@@ -16,7 +16,7 @@
       <div class="row justify-content-center my-auto">
 
         <form class="row justify-content-center"  [formGroup]="registerForm" (ngSubmit)="processRegistration()">
-          <table  class="row justify-content-center" style="width: 25vw;">
+          <table  class="row justify-content-center" style="min-width: 35m">
             <tr>
               <div class="mb-3">
                 <label for="name" class="form-label fs-4">Name</label>
@@ -76,6 +76,7 @@
             <tr>
               <div class="my-3">
                 <button type="submit" [disabled]="registerForm.invalid" class="btn btn-secondary fs-5">Register</button>
+                <button type="submit" [routerLink]="['/']" class="btn btn-secondary fs-5 float-end">Back</button>
               </div>
             </tr>
           </table>

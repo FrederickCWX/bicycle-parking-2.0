@@ -39,6 +39,7 @@ export class SearchComponent implements OnInit{
       )
     }
     */
+    sessionStorage.removeItem('errorMessage')
     this.searchForm = this.createSearch(this.search)
     
   }
@@ -57,7 +58,7 @@ export class SearchComponent implements OnInit{
       if (error instanceof HttpErrorResponse) {
         const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message
         console.error('>>> error: ', error)
-        this.errorMessage=String(constErrorMessage)
+        this.errorMessage = String(constErrorMessage)
         this.listen()
       }
     })

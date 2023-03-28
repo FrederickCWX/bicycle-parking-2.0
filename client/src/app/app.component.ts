@@ -16,9 +16,13 @@ export class AppComponent implements OnInit{
   //name: string | null = null 
   name = sessionStorage.getItem('name')
   nameExist: boolean = false
-  //constructor(private router: Router) {}
+  constructor(private router: Router) {}
+
   ngOnInit(): void {
-    
+    sessionStorage.removeItem('name')
+    sessionStorage.removeItem('email')
+    sessionStorage.removeItem('errorMessage')
+    //this.errorMessage = sessionStorage.getItem('errorMessage') 
     this.requestPermission()
     //this.listen();
   }
@@ -39,6 +43,12 @@ export class AppComponent implements OnInit{
 
   storeToken(token: string) {
     sessionStorage.setItem('token', token)
+  }
+
+  newLogin() {
+    sessionStorage.removeItem('name')
+    sessionStorage.removeItem('email')
+    this.router.navigate(['/'])
   }
 
   /*
