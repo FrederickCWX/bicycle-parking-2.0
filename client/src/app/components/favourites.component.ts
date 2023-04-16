@@ -37,7 +37,6 @@ export class FavouritesComponent implements OnInit{
           const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message
           console.error('>>> error: ', error)
           this.errorMessage=String(constErrorMessage)
-          //console.info('>>> error message is : ', this.errorMessage)
         }
       })
   }
@@ -78,33 +77,5 @@ export class FavouritesComponent implements OnInit{
   setErrorMessage() {
     sessionStorage.setItem('errorMessage', 'Login to view your favourites')
   }
-
-
-
-  /*
-
-  params$!: Subscription
-  favourites!: Favourites
-
-  constructor(private activatedRoute: ActivatedRoute, private parkingSvc: ParkingService) { }
-
-  ngOnInit(): void {
-
-    this.params$ = this.activatedRoute.params.subscribe(
-      (params) => {
-        const favouritesId = params['favouritesId']
-        this.parkingSvc.getFavourites()
-          .then(result => {
-            this.favourites = result
-            console.info('>>> favourites: ', this.favourites)
-          })
-          .catch(error => {
-            console.error('>> error: ', error)
-          })
-      }
-    )
-      
-  }
-  */
 
 }

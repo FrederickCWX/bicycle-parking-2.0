@@ -37,27 +37,12 @@ export class RegisterComponent implements OnInit{
       })
       .catch(error => {
         if (error instanceof HttpErrorResponse) {
-          console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
           const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message;
-          console.error(`Error message: ${constErrorMessage}`);
           console.error('>>> error: ', error)
           this.errorMessage=String(constErrorMessage)
           this.listen();
         }
       })
-      /*
-      .catch(error => {
-        console.error('>>> error: ', error)
-      })
-      */
-    
-    /*
-    if (Error instanceof HttpErrorResponse) {
-      console.error(`Backend returned code ${Error.status}, body was: ${Error.error}`);
-      const errorMessage = typeof Error.error === 'string' ? Error.error : Error.message;
-      console.error(`Error message: ${errorMessage}`);
-    }
-    */
   }
 
   listen() {

@@ -38,7 +38,6 @@ export class BookingsComponent implements OnInit{
           this.errorMessage=String(constErrorMessage)
           if(this.errorMessage === 'You have no bookings')
             this.bookingSize = 0
-          //console.info('>>> error message is : ', this.errorMessage)
         }
       })
   }
@@ -55,7 +54,5 @@ export class BookingsComponent implements OnInit{
   setErrorMessage() {
     sessionStorage.setItem('errorMessage', 'Login to view your bookings')
   }
-
-  
 
 }

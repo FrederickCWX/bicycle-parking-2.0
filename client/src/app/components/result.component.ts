@@ -30,8 +30,6 @@ export class ResultComponent implements OnInit{
     this.resultSize = this.results.length
     sessionStorage.removeItem('postal')
     sessionStorage.removeItem('radius')
-
-      //this.bookingForm = this.createBooking(this.booking)
   }
 
   saveFavourites(i: number) {

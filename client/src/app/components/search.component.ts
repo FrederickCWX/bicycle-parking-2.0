@@ -17,8 +17,6 @@ export class SearchComponent implements OnInit{
   @Input()
   search: Search | null=null
 
-  //params$!: Subscription
-
   searchForm!: FormGroup
   errorMessage: any =null
   name: string = sessionStorage.getItem('name') as string
@@ -26,22 +24,8 @@ export class SearchComponent implements OnInit{
   constructor(private fb: FormBuilder, private parkingSvc: ParkingService, private router: Router) { }
 
   ngOnInit(): void {
-    //sessionStorage.removeItem('postal')
-    //sessionStorage.removeItem('radius')
-    /*
-    if(this.params$) {
-      this.params$ = this.activatedRoute.params.subscribe(
-        (params) => {
-          const radius = params['radius']
-          const postal = params['postal']
-          this.urlSearch(radius, postal)
-        }
-      )
-    }
-    */
     sessionStorage.removeItem('errorMessage')
     this.searchForm = this.createSearch(this.search)
-    
   }
 
   processSearch() {
@@ -51,7 +35,6 @@ export class SearchComponent implements OnInit{
     .then(result => {
       console.info('>>> Search result: ', result)
       this.parkingSvc.results = result
-      //this.storeResult(result)
       this.router.navigate(['/result'])
     })
     .catch(error => {
@@ -70,7 +53,6 @@ export class SearchComponent implements OnInit{
     .then(result => {
       console.info('>>> Search result: ', result)
       this.parkingSvc.results = result
-      //this.storeResult(result)
       this.router.navigate(['/result'])
     })
     .catch(error => {

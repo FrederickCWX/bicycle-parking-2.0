@@ -43,26 +43,20 @@ public class AngularController {
 
   @Autowired
   private UserParkingRepository upRepo;
-
   @Autowired
   private MongoRepository mongoRepo;
-
   @Autowired
   private ParkingAPIService parkingSvc;
-
   @Autowired
   private PostalAPIService postalSvc;
-
   @Autowired
   private WebNotificationService wnSvc;
-
   @Autowired
   private EmailSenderService emailSvc;
 
   //Login
   @GetMapping(path="/user")
   public ResponseEntity<?> validifyUser(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "password", required = true) String password) throws Exception {
-
     UserDetails ud = new UserDetails();
     ud = upRepo.checkAndReturnUserCredentials(email, password);
 
@@ -79,7 +73,6 @@ public class AngularController {
   //Register
   @PostMapping(path="/register")
   public ResponseEntity<?> registration(@RequestHeader(value = "name", required = true) String name, @RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "password", required = true) String password, @RequestHeader(value = "confirmPassword", required = true) String confirmPassword) throws Exception {
-
     String cleanName = CleanString.cleanName(name);
 
     if(!password.equals(confirmPassword)) {
@@ -100,7 +93,6 @@ public class AngularController {
   }
 
   //Favourites
-  
   @GetMapping(path="/favourites") 
   public ResponseEntity<?> getFavourites(@RequestParam(value = "email", required = true) String email) throws Exception {
 
@@ -119,8 +111,6 @@ public class AngularController {
     return ResponseEntity.ok(arrayBuilder.build().toString());
   }
   
-
-  //@RequestHeader(value = "result", required = true) String result, 
   @PostMapping(path="/savefav")
   public ResponseEntity<?> addFavourites(@RequestBody String result, @RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "token", required = true) String token) throws Exception {
 
@@ -139,11 +129,9 @@ public class AngularController {
       errorResponse.setMessage("Failed to save to favourites");
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     } else {
-      //wnSvc.sendFavNotification(favourites.getDescription(), token);
       wnSvc.sendNotification(token, "favourites");
       return ResponseEntity.ok("{\"status\":\"success\"}");
     }
-    
   }
 
   /*
@@ -164,6 +152,7 @@ public class AngularController {
   }
   */
   
+  //TODO!!!
   @DeleteMapping(path="/deletefav")
   public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
 
@@ -210,17 +199,17 @@ public class AngularController {
     Collections.sort(Parkings.getValue(), new SortByDistance());
     List<Value> val = Parkings.getValue();
 
-    StringBuilder sb = new StringBuilder();
-    sb.append("There are ");
-    sb.append(val.size());
-    sb.append(" bicycle parking bay(s) within ");
-    sb.append((int) (q.getRadius()*1000));
-    sb.append(" metres of ");
-    sb.append(results.get(0).getAddress());
-    sb.append(", Singapore ");
-    sb.append(postal);
-    Parkings.setInfo(sb.toString());
-    String info = sb.toString();
+    // StringBuilder sb = new StringBuilder();
+    // sb.append("There are ");
+    // sb.append(val.size());
+    // sb.append(" bicycle parking bay(s) within ");
+    // sb.append((int) (q.getRadius()*1000));
+    // sb.append(" metres of ");
+    // sb.append(results.get(0).getAddress());
+    // sb.append(", Singapore ");
+    // sb.append(postal);
+    // Parkings.setInfo(sb.toString());
+    // String info = sb.toString();
 
     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
     val.stream()
@@ -229,19 +218,6 @@ public class AngularController {
         });
     
     return ResponseEntity.ok(arrayBuilder.build().toString());
-
-    /*
-    model.addAttribute("respDetails", Parkings.getInfo());
-    if(val.size() > 0){
-      model.addAttribute("details", val);
-    }
-
-    model.addAttribute("Radius", q.getRadius());
-
-    logger.info("Search successful, results > " + Parkings.getInfo());
-
-    return "result";
-    */
   }
 
   //Bookings
@@ -251,26 +227,15 @@ public class AngularController {
     Bookings b = Bookings.createJson(booking);
     Integer success = upRepo.addBooking(b);
 
-    // Favourites checkFavourites = upRepo.checkFavouritesExist(favourites.getImage());
-    // Integer success;
-
-    // if(checkFavourites != null) {
-    //   success = upRepo.addExistingFavourites(checkFavourites.getParkingId(), email);
-    // } else {
-    //   success = upRepo.addNewFavourites(favourites, email);
-    // }
-
     if(success == 0) {
       ErrorResponse errorResponse = new ErrorResponse();
       errorResponse.setMessage("Booking failed");
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     } else {
-      //wnSvc.sendFavNotification(favourites.getDescription(), token);
       wnSvc.sendNotification(token, "bookings");
       emailSvc.bookingConfirmationEmail(name, b);
       return ResponseEntity.ok("{\"status\":\"success\"}");
     }
-    
   }
 
   @GetMapping(path="/bookings") 
@@ -289,7 +254,6 @@ public class AngularController {
         });
 
     return ResponseEntity.ok(arrayBuilder.build().toString());
-
   }
 
   //MongoDB

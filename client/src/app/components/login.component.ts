@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit{
           this.loginError=String(constErrorMessage)
           this.listen();
         }
-        //console.info('>>> error: ', error)
       })
   }
 
