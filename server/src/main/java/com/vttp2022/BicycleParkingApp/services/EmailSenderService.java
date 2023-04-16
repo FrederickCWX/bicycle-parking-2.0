@@ -6,6 +6,8 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import com.vttp2022.BicycleParkingApp.models.mysql.Bookings;
+
 @Service
 public class EmailSenderService {
 
@@ -40,6 +42,40 @@ public class EmailSenderService {
 
     logger.info("Mail Sent successfully to "+toEmail);
     
+  }
+
+  public void bookingConfirmationEmail(String name, Bookings b) {
+    SimpleMailMessage message = new SimpleMailMessage();
+    message.setFrom("bicycleparkingapp@gmail.com");
+    message.setTo(b.getEmail());
+    message.setText(String.format("Dear %s,\n\nYour bicycle parking rack booking has been confirmed on %s, at the following bicycle parking bay location:\n\nDescription: %s\nRack Type: %s\nRack Count: %s\nSheltered: %s\n\nThank you for using SG Bicycle Parking.\n\nWarm Regards,\nSG Bicycle Parking team.\n\nThis is an automatically generated email. Please do not reply.", 
+        name,
+        b.getBookingDate(),
+        b.getDescription(),
+        b.getRackType(),
+        b.getRackCount(),
+        b.getSheltered()));
+    message.setSubject("Bicycle Parking Booking Confirmation");
+
+    mailSender.send(message);
+
+    logger.info("Booking confirmation email successfully to "+b.getEmail());
+    /*
+     * Dear *name*,
+     * 
+     * Your bicycle parking rack booking has been confirmed on *date*, at the following bicycle parking bay location:
+     * Description: *description*
+     * Rack Type: *rackType*
+     * Rack Count: *rackCount*
+     * Sheltered: *sheltered*
+     * 
+     * Thank you for using SG Bicycle Parking.
+     * 
+     * Warm Regards,
+     * SG Bicycle Parking team.
+     * This is an automatically generated email. Please do not reply.
+     */
+
   }
   
 }

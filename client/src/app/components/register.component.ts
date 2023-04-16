@@ -32,6 +32,8 @@ export class RegisterComponent implements OnInit{
     this.parkingSvc.registerNewUser(registerUser.name, registerUser.email, registerUser.password, registerUser.confirmPassword)
       .then(result => {
         console.info('>>> Registration status: ', result)
+        sessionStorage.setItem('name', registerUser.name)
+        sessionStorage.setItem('email', registerUser.email)
       })
       .catch(error => {
         if (error instanceof HttpErrorResponse) {

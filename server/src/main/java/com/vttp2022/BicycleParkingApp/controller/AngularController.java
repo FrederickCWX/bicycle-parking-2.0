@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.vttp2022.BicycleParkingApp.models.ErrorResponse;
+import com.vttp2022.BicycleParkingApp.models.mongodb.Result;
+import com.vttp2022.BicycleParkingApp.models.mysql.Bookings;
 import com.vttp2022.BicycleParkingApp.models.mysql.Favourites;
 import com.vttp2022.BicycleParkingApp.models.mysql.UserDetails;
 import com.vttp2022.BicycleParkingApp.models.parking.Parkings;
@@ -19,7 +21,9 @@ import com.vttp2022.BicycleParkingApp.models.parking.Query;
 import com.vttp2022.BicycleParkingApp.models.parking.Value;
 import com.vttp2022.BicycleParkingApp.models.postal.Postal;
 import com.vttp2022.BicycleParkingApp.models.postal.Results;
+import com.vttp2022.BicycleParkingApp.repositories.MongoRepository;
 import com.vttp2022.BicycleParkingApp.repositories.UserParkingRepository;
+import com.vttp2022.BicycleParkingApp.services.EmailSenderService;
 import com.vttp2022.BicycleParkingApp.services.ParkingAPIService;
 import com.vttp2022.BicycleParkingApp.services.PostalAPIService;
 import com.vttp2022.BicycleParkingApp.services.WebNotificationService;
@@ -41,6 +45,9 @@ public class AngularController {
   private UserParkingRepository upRepo;
 
   @Autowired
+  private MongoRepository mongoRepo;
+
+  @Autowired
   private ParkingAPIService parkingSvc;
 
   @Autowired
@@ -48,6 +55,9 @@ public class AngularController {
 
   @Autowired
   private WebNotificationService wnSvc;
+
+  @Autowired
+  private EmailSenderService emailSvc;
 
   //Login
   @GetMapping(path="/user")
@@ -129,7 +139,8 @@ public class AngularController {
       errorResponse.setMessage("Failed to save to favourites");
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     } else {
-      wnSvc.sendFavNotification(favourites.getDescription(), token);
+      //wnSvc.sendFavNotification(favourites.getDescription(), token);
+      wnSvc.sendNotification(token, "favourites");
       return ResponseEntity.ok("{\"status\":\"success\"}");
     }
     
@@ -234,6 +245,34 @@ public class AngularController {
   }
 
   //Bookings
+  @PostMapping(path="/savebooking")
+  public ResponseEntity<?> addBooking(@RequestBody String booking, @RequestHeader(value = "token", required = true) String token, @RequestHeader(value = "name", required = true) String name) throws Exception {
+
+    Bookings b = Bookings.createJson(booking);
+    Integer success = upRepo.addBooking(b);
+
+    // Favourites checkFavourites = upRepo.checkFavouritesExist(favourites.getImage());
+    // Integer success;
+
+    // if(checkFavourites != null) {
+    //   success = upRepo.addExistingFavourites(checkFavourites.getParkingId(), email);
+    // } else {
+    //   success = upRepo.addNewFavourites(favourites, email);
+    // }
+
+    if(success == 0) {
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("Booking failed");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    } else {
+      //wnSvc.sendFavNotification(favourites.getDescription(), token);
+      wnSvc.sendNotification(token, "bookings");
+      emailSvc.bookingConfirmationEmail(name, b);
+      return ResponseEntity.ok("{\"status\":\"success\"}");
+    }
+    
+  }
+
   @GetMapping(path="/bookings") 
   public ResponseEntity<?> getBookings(@RequestParam(value = "email", required = true) String email) throws Exception {
 
@@ -251,6 +290,33 @@ public class AngularController {
 
     return ResponseEntity.ok(arrayBuilder.build().toString());
 
+  }
+
+  //MongoDB
+  @GetMapping(path = "/check")
+  public ResponseEntity<?> checkAvailability(@RequestParam(value = "image", required = true) String image) throws Exception{
+    if(mongoRepo.getAvailability(image) == null) {
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("Availability full");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    Integer availability = mongoRepo.getAvailability(image);
+    return ResponseEntity.ok(String.valueOf(availability));
+  }
+
+  @PostMapping(path = "/update")
+  public ResponseEntity<?> updateAvailability(@RequestBody String result) throws Exception {
+    Result r = Result.createJson(result);
+    Integer success = mongoRepo.updateAvailability(r);
+
+    if(success == 0) {
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("MongoDB update failed");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    } else {
+      return ResponseEntity.ok("{\"status\":\"success\"}");
+    }
   }
 
 

@@ -23,19 +23,6 @@ public class Favourites extends Coord{
   private String sheltered;
   private Coord coord;
 
-  /*
-  public Favourites(String parkingId, String image, String description, String rackType, Integer rackCount, String sheltered, BigDecimal lat, BigDecimal lng ) {
-    Coord coord = new Coord(lat, lng);
-    this.parkingId = parkingId;
-    this.image = image;
-    this.description = description;
-    this.rackType = rackType;
-    this.rackCount = rackCount;
-    this.sheltered = sheltered;
-    this.coord = coord;
-  }
-  */
-
   public String getParkingId() { return parkingId; }
   public void setParkingId(String parkingId) { this.parkingId = parkingId; }
 

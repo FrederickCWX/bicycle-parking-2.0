@@ -2,6 +2,7 @@ package com.vttp2022.BicycleParkingApp.repositories;
 
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -104,6 +105,14 @@ public class UserParkingRepository {
       return Favourites.create(response);
     else
       return null;
+  }
+
+  // public Bookings checkBookingExist(String email, String image, String date) throws Exception {
+  //   SqlRowSet response = jdbcTemplate.queryForRowSet(date);
+  // }
+
+  public Integer addBooking(Bookings b) {
+    return jdbcTemplate.update(SQL_ADD_BOOKING, b.getEmail(), b.getBookingDate(), b.getImage(), b.getDescription(), b.getRackType(), b.getRackCount(), b.getSheltered());
   }
 
   public List<Bookings> getBookings(String email) {

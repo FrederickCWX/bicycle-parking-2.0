@@ -1,9 +1,16 @@
 package com.vttp2022.BicycleParkingApp.models.mysql;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import jakarta.json.Json;
+import jakarta.json.JsonNumber;
 import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.JsonString;
 
 public class Bookings {
 
@@ -52,6 +59,32 @@ public class Bookings {
     b.setRackCount(rs.getInt("rack_count"));
     b.setSheltered(rs.getString("sheltered"));
 
+    return b;
+  }
+
+  public static Bookings createJson(String json) throws IOException {
+    Bookings b = new Bookings();
+
+    try(InputStream in = new ByteArrayInputStream(json.getBytes())) {
+      JsonReader jr = Json.createReader(in);
+      JsonObject jo = jr.readObject();
+
+      JsonString jsEmail = jo.getJsonString("email");
+      b.email = jsEmail.getString();
+      JsonString jsDate = jo.getJsonString("date");
+      b.bookingDate = jsDate.getString();
+      JsonString jsImg = jo.getJsonString("image");
+      b.image = jsImg.getString();
+      JsonString jsDesp = jo.getJsonString("description");
+      b.description = jsDesp.getString();
+      JsonString jsType = jo.getJsonString("rackType");
+      b.rackType = jsType.getString();
+      JsonNumber jnCount = jo.getJsonNumber("rackCount");
+      b.rackCount = jnCount.intValue();
+      JsonString jsShelter = jo.getJsonString("sheltered");
+      b.sheltered = jsShelter.getString();
+
+    }
     return b;
   }
 

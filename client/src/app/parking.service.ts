@@ -34,6 +34,7 @@ export class ParkingService {
       this.http.post<string>(`${this.apiServerUrl}/api/register`, null, {headers})
     )
     .then(result => {
+      this.router.navigate(['/search'])
       return result
     })
     //return Promise.reject('Registration failed - Passwords do not match');
@@ -128,6 +129,22 @@ export class ParkingService {
   */
 
   //Bookings
+  addBooking(booking: Bookings, name: string): Promise<string> {
+    const token = sessionStorage.getItem('token') as string
+    const jsonString = JSON.stringify(booking)
+    const headers = new HttpHeaders().set("token", token).set("name", name)
+    
+    console.info('Headers >>> ', headers)
+
+    return firstValueFrom(
+      this.http.post<string>(`${this.apiServerUrl}/api/savebooking`, jsonString, {headers})
+    )
+    .then(result => {
+      console.info("Booking status >>> ", result)
+      return result
+    })
+  }
+
   getBookings(email: string): Promise<Bookings[]> {
     const params = new HttpParams().set("email", email)
 
@@ -136,6 +153,32 @@ export class ParkingService {
     )
     .then(result => {
       console.info("Bookings >>> ", result)
+      return result
+    })
+  }
+
+
+  //MONGODB - available lots
+  checkAvailability(image: string): Promise<Results[]>{
+    const params = new HttpParams().set("image", image)
+    
+    return firstValueFrom(
+      this.http.get<Results[]>(`${this.apiServerUrl}/api/check`, {params})
+    )
+    .then(result => {
+      console.info("Availability lots >>> ", result)
+      return result
+    })
+  }
+
+  updateAvailability(result: Results): Promise<string> {
+    const jsonString = JSON.stringify(result)
+
+    return firstValueFrom(
+      this.http.post<string>(`${this.apiServerUrl}/api/update`, jsonString)
+    )
+    .then(result => {
+      console.info("Mongodb update status >>> ", result)
       return result
     })
   }

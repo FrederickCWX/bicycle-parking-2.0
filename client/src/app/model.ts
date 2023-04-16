@@ -37,6 +37,7 @@ export interface Results {
   lat: number
   lng: number
   rackType: string
+  availablity: number
   rackCount: number
   sheltered: string
 }

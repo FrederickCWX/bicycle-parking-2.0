@@ -57,6 +57,17 @@ export class ResultComponent implements OnInit{
     booking.sheltered = result.sheltered
     booking.email = this.getSessionUserEmail()
     console.info(booking)
+
+    this.parkingSvc.addBooking(booking, sessionStorage.getItem('name') as string)
+    .then(result => {
+      console.info('>>> Booking status: ', result)
+      this.router.navigate(['/booking'])
+
+      //TODO add update to mongodb
+    })
+    .catch(error => {
+      console.error('>>> Error: ', error)
+    })
   }
 
   getSessionUserEmail() {
