@@ -5,12 +5,9 @@ import java.util.List;
 
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -19,11 +16,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.vttp2022.BicycleParkingApp.models.mysql.Bookings;
 import com.vttp2022.BicycleParkingApp.repositories.UserParkingRepository;
 
+import static com.vttp2022.BicycleParkingApp.repositories.Queries.*;
+
+import jakarta.json.Json;
+import jakarta.json.JsonArrayBuilder;
+
 @Service
 public class TelegramBot extends TelegramLongPollingBot{
 
     @Autowired
-    public UserParkingRepository upRepo;
+    private UserParkingRepository upRepo;
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
@@ -32,8 +34,6 @@ public class TelegramBot extends TelegramLongPollingBot{
         //System.out.println(update.getMessage().getText());
         //System.out.println(update.getMessage().getFrom().getFirstName());
         logger.info(String.format("(Telegram Bot) Message from %s >>> %s",update.getMessage().getFrom().getFirstName(),update.getMessage().getText()));
-
-
         
         String command = update.getMessage().getText();
 
@@ -51,15 +51,21 @@ public class TelegramBot extends TelegramLongPollingBot{
         }
 
         if(command.contains("@")) {
-            logger.info("Reservation request email >>> "+command);
             String email = command;
+            logger.info("Reservation request email >>> "+email);
             String message = "";
 
             try {
+                logger.info("test");
+                // UserParkingRepository upRepo = new UserParkingRepository();
                 List<Bookings> bookingsList = upRepo.getBookings(email);
-                if(bookingsList == null){
+                //List<Bookings> bookingsList = UserParkingRepository.getBookings(email);
+                //JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+                
+                if(bookingsList.size()<=0) {
                     message = "You have no bicycle parking reservation";
-                }else if(bookingsList.size()>0) {
+                }else {
+                
                     StringBuilder sb = new StringBuilder();
                     sb.append("You have ");
                     sb.append(bookingsList.size());
@@ -79,6 +85,7 @@ public class TelegramBot extends TelegramLongPollingBot{
                     message = sb.toString();
                 }
             } catch (Exception e) {
+                logger.error("ERROR >>> ");
                 logger.error(e.getMessage());
             }
 

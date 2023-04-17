@@ -1,5 +1,7 @@
 package com.vttp2022.BicycleParkingApp.controller;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -225,6 +227,16 @@ public class AngularController {
   public ResponseEntity<?> addBooking(@RequestBody String booking, @RequestHeader(value = "token", required = true) String token, @RequestHeader(value = "name", required = true) String name) throws Exception {
 
     Bookings b = Bookings.createJson(booking);
+
+    LocalDate date = LocalDate.parse(b.getBookingDate(), DateTimeFormatter.ISO_DATE);
+    LocalDate currentDate = LocalDate.now();
+    boolean correctDate = date.isAfter(currentDate) || date.equals(currentDate);
+    if(!correctDate) {
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("Invalid booking date");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
     Integer success = upRepo.addBooking(b);
 
     if(success == 0) {
@@ -272,15 +284,23 @@ public class AngularController {
   @PostMapping(path = "/update")
   public ResponseEntity<?> updateAvailability(@RequestBody String result) throws Exception {
     Result r = Result.createJson(result);
-    Integer success = mongoRepo.updateAvailability(r);
-
-    if(success == 0) {
-      ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("MongoDB update failed");
-      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    } else {
-      return ResponseEntity.ok("{\"status\":\"success\"}");
+    Integer currAvailability = mongoRepo.getAvailability(r.getImage());
+    if(currAvailability == -10) mongoRepo.insertAvailability(r);
+    else {
+      Integer availabilityToUpdate = currAvailability - 1;
+      r.setAvailability(availabilityToUpdate);
+      //mongoRepo.updateAvailability(r);
     }
+
+    return ResponseEntity.ok("{\"status\":\"success\"}");
+
+    // if(success == 0) {
+    //   ErrorResponse errorResponse = new ErrorResponse();
+    //   errorResponse.setMessage("MongoDB update failed");
+    //   return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    // } else {
+    //   return ResponseEntity.ok("{\"status\":\"success\"}");
+    // }
   }
 
 

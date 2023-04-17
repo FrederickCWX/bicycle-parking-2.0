@@ -1,8 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { getMessaging, onMessage } from 'firebase/messaging';
 import { Bookings, Results } from '../model';
 import { ParkingService } from '../parking.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-result',
@@ -15,6 +17,8 @@ export class ResultComponent implements OnInit{
   booking: Bookings | null=null
 
   bookingForm!: FormGroup
+
+  errorMessage:any = null;
 
   results: Results[] = []
   resultSize!: number
@@ -57,15 +61,29 @@ export class ResultComponent implements OnInit{
     console.info(booking)
 
     this.parkingSvc.addBooking(booking, sessionStorage.getItem('name') as string)
-    .then(result => {
-      console.info('>>> Booking status: ', result)
-      this.router.navigate(['/booking'])
+      .then(result => {
+        console.info('>>> Booking status: ', result)
+        this.router.navigate(['/booking'])
 
-      //TODO add update to mongodb
-    })
-    .catch(error => {
-      console.error('>>> Error: ', error)
-    })
+        //TODO add update to mongodb
+      })
+      .catch(error => {
+        if (error instanceof HttpErrorResponse) {
+          console.info('HTTP Error Response')
+          const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message;
+          console.error('>>> error: ', error)
+          this.errorMessage=String(constErrorMessage)
+          this.listen();
+        }
+      })
+  }
+
+  listen() {
+    const messaging = getMessaging();
+    onMessage(messaging, (payload) => {
+      console.log('Message received. ', payload);
+      this.errorMessage=payload;
+    });
   }
 
   getSessionUserEmail() {

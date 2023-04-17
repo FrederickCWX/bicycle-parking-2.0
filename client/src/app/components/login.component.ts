@@ -39,9 +39,9 @@ export class LoginComponent implements OnInit{
       })
       .catch(error => {
         if (error instanceof HttpErrorResponse) {
-          console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
+          //console.error(`Backend returned code ${error.status}, body was: ${error.error}`);
           const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message;
-          console.error(`Error message: ${constErrorMessage}`);
+          //console.error(`Error message: ${constErrorMessage}`);
           console.error('>>> error: ', error)
           this.loginError=String(constErrorMessage)
           this.listen();
