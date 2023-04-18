@@ -36,34 +36,38 @@
                   <table class="table table-responsive table-borderless my-0 mx-auto fs-5 text-start" style="width: auto; height: auto;">
                     <tbody>
                       <tr>
-                        <th class="col-md-3">Description: </th>
+                        <th class="col-md-5">Description: </th>
                         <td>{{ r.description }}</td>
                       </tr>
                       <tr>
-                        <th class="col-md-3">Distance: </th>
+                        <th class="col-md-5">Distance: </th>
                         <td>{{ r.distance }} metres</td>
                       </tr>
                       <tr>
-                        <th class="col-md-3">Rack Type: </th>
+                        <th class="col-md-5">Rack Type: </th>
                         <td>{{ r.rackType }}</td>
                       </tr>
                       <tr>
-                        <th class="col-md-3">Rack Count: </th>
+                        <th class="col-md-5">Total Rack Count: </th>
                         <td>{{ r.rackCount }}</td>
                       </tr>
                       <tr>
-                        <th class="col-md-3">Sheltered bay: </th>
+                        <th class="col-md-5">Current Available Racks: </th>
+                        <td>{{ r.availability }}</td>
+                      </tr>
+                      <tr>
+                        <th class="col-md-5">Sheltered bay: </th>
                         <td>{{ r.sheltered }}</td>
                       </tr>
                       <tr>
-                        <th class="col-md-3">Booking Date: </th>
+                        <th class="col-md-5">Booking Date: </th>
                         <td><input type="date" class="bg-transparent" formControlName="date"></td>
                       </tr>
                       <tr>
-                        <th class="col-md-3" colspan="2">
+                        <th class="col-md-5">
                           <button type="button" (click)="saveFavourites(i)" class="btn btn-secondary fs-5">Add to favourite</button>
                         </th>
-                        <td class="col-md-3" colspan="2">
+                        <td class="col-md-6">
                           <button type="button" class="btn btn-secondary fs-5" (click)="processBooking(i)" [disabled]="bookingForm.invalid">Book a rack</button>
                         </td>
                       </tr>

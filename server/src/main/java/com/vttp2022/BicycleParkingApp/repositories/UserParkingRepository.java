@@ -75,6 +75,8 @@ public class UserParkingRepository {
   }
 
   public Integer deleteFavourites(String parkingId, String email) throws Exception {
+    logger.info(parkingId);
+    logger.info(email);
     return jdbcTemplate.update(SQL_DELETE_FAVOURITES_FROM_USER_PARKING, email, parkingId);
   }
 
@@ -115,6 +117,14 @@ public class UserParkingRepository {
     return jdbcTemplate.update(SQL_ADD_BOOKING, b.getEmail(), b.getBookingDate(), b.getImage(), b.getDescription(), b.getRackType(), b.getRackCount(), b.getSheltered());
   }
 
+  public boolean checkIfBookingsExist(Bookings b) {
+    final SqlRowSet response = jdbcTemplate.queryForRowSet(SQL_CHECK_IF_EXIST, b.getEmail(), b.getImage(), b.getBookingDate());
+
+    if(response.next()) return true;
+
+    return false;
+  }
+
   public List<Bookings> getBookings(String email) {
     logger.info("Retrieving bookings >>> email");
     final SqlRowSet response = jdbcTemplate.queryForRowSet(SQL_GET_BOOKINGS_BY_USER_EMAIL, email);
@@ -130,6 +140,11 @@ public class UserParkingRepository {
     }
 
     return bookingsList;
+  }
+
+  public static List<Bookings> getTeleBooking(String email) {
+    //List<Bookings> bList = getBookings(email);
+    return null;
   }
   
 }

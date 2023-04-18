@@ -12,6 +12,7 @@ com/vttp2022/BicycleParkingApp/utilities/SortByDistance.class
 com/vttp2022/BicycleParkingApp/services/ParkingAPIService.class
 com/vttp2022/BicycleParkingApp/AppConfig.class
 com/vttp2022/BicycleParkingApp/services/PostalAPIService.class
+com/vttp2022/BicycleParkingApp/models/mongodb/BookingAvailability.class
 com/vttp2022/BicycleParkingApp/models/parking/Query.class
 com/vttp2022/BicycleParkingApp/models/postal/Results.class
 com/vttp2022/BicycleParkingApp/models/mysql/Favourites.class
@@ -23,7 +24,6 @@ com/vttp2022/BicycleParkingApp/models/mysql/Coord.class
 com/vttp2022/BicycleParkingApp/BicycleParkingAppApplication.class
 com/vttp2022/BicycleParkingApp/services/EmailSenderService.class
 com/vttp2022/BicycleParkingApp/models/mysql/UserParking.class
-com/vttp2022/BicycleParkingApp/models/mongodb/Result.class
 com/vttp2022/BicycleParkingApp/repositories/MongoRepository.class
 com/vttp2022/BicycleParkingApp/utilities/CalculateDistance.class
 com/vttp2022/BicycleParkingApp/models/User.class

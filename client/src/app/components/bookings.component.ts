@@ -44,6 +44,13 @@ export class BookingsComponent implements OnInit{
 
   removeBooking(i: number) {
     let booking = this.bookings[i]
+    this.parkingSvc.removeBookings(booking, sessionStorage.getItem("name") as string)
+      .then(result => {
+        console.info('>>> Cancel booking status: ', result)
+      })
+      .catch(error => {
+        console.error('>>> error: ', error)
+      })
   }
 
   getSessionUserEmail() {

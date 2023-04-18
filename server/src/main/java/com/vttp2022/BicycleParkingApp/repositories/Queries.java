@@ -37,7 +37,11 @@ public class Queries {
 
   public static final String SQL_ADD_BOOKING = "insert ignore into bookings(email, booking_date, image, description, rack_type, rack_count, sheltered) values(?, ?, ?, ?, ?, ?, ?)";
 
+  public static final String SQL_CHECK_IF_EXIST = "select * from bookings where email=? and image=? and booking_date=?";
+
   public static final String SQL_GET_BOOKINGS_BY_USER_EMAIL = "select * from bookings where email=?";
+
+  public static final String SQL_REMOVE_BOOKING = "delete from bookings where email=? and booking_date=? and image=?";
 
 
   

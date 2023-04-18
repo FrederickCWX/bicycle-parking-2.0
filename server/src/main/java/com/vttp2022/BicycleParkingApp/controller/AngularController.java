@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.vttp2022.BicycleParkingApp.models.ErrorResponse;
-import com.vttp2022.BicycleParkingApp.models.mongodb.Result;
+import com.vttp2022.BicycleParkingApp.models.mongodb.BookingAvailability;
 import com.vttp2022.BicycleParkingApp.models.mysql.Bookings;
 import com.vttp2022.BicycleParkingApp.models.mysql.Favourites;
 import com.vttp2022.BicycleParkingApp.models.mysql.UserDetails;
@@ -155,12 +155,30 @@ public class AngularController {
   */
   
   //TODO!!!
-  @DeleteMapping(path="/deletefav")
-  public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
+  // @DeleteMapping(path="/deletefav")
+  // public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
 
-    logger.info("ParkingID >>> "+ parkingId);
-    logger.info("Email >>> "+email);
-    Integer success = upRepo.deleteFavourites(parkingId, email);
+  //   logger.info("ParkingID >>> "+ parkingId);
+  //   logger.info("Email >>> "+email);
+  //   Integer success = upRepo.deleteFavourites(parkingId, email);
+
+  //   if(success == 0) {
+  //     ErrorResponse errorResponse = new ErrorResponse();
+  //     errorResponse.setMessage("Failed to remove from favourites");
+  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  //   } else {
+  //     return ResponseEntity.ok("{\"status\":\"success\"}");
+  //   }
+  // }
+
+  @DeleteMapping("/deletefav")
+  public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "email", required = true) String email, @RequestBody String favourite) throws Exception {
+
+    // logger.info("ParkingID >>> "+ parkingId);
+    // logger.info("Email >>> "+email);
+    logger.info(favourite);
+    Favourites f = Favourites.createJson(favourite);
+    Integer success = upRepo.deleteFavourites(f.getParkingId(), email);
 
     if(success == 0) {
       ErrorResponse errorResponse = new ErrorResponse();
@@ -173,7 +191,7 @@ public class AngularController {
 
   //Search | results
   @GetMapping("/results")
-  public ResponseEntity<?> searchParking(@RequestParam(value = "postal", required = true) String postal, @RequestParam(value = "radius", required = true) String radius){
+  public ResponseEntity<?> searchParking(@RequestParam(value = "postal", required = true) String postal, @RequestParam(value = "radius", required = true) String radius) throws Exception{
 
     Query q = new Query();
     Optional<Postal> optPostal = postalSvc.getPostalDetails(Integer.parseInt(postal));
@@ -200,19 +218,12 @@ public class AngularController {
 
     Collections.sort(Parkings.getValue(), new SortByDistance());
     List<Value> val = Parkings.getValue();
-
-    // StringBuilder sb = new StringBuilder();
-    // sb.append("There are ");
-    // sb.append(val.size());
-    // sb.append(" bicycle parking bay(s) within ");
-    // sb.append((int) (q.getRadius()*1000));
-    // sb.append(" metres of ");
-    // sb.append(results.get(0).getAddress());
-    // sb.append(", Singapore ");
-    // sb.append(postal);
-    // Parkings.setInfo(sb.toString());
-    // String info = sb.toString();
-
+    for(Value v: val){
+      Integer a = mongoRepo.getCurrentAvailability(v.getImg());
+      if(a.equals(-10)) v.setAvailability(v.getRackCount());
+      else v.setAvailability(a);
+    }
+    
     JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
     val.stream()
         .forEach(f -> {
@@ -237,17 +248,51 @@ public class AngularController {
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
-    Integer success = upRepo.addBooking(b);
-
-    if(success == 0) {
+    if(upRepo.checkIfBookingsExist(b)) {
       ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("Booking failed");
+      errorResponse.setMessage("Booking already exists");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+    //Mongo update availability
+    BookingAvailability ba = new BookingAvailability();
+    ba.setDate(b.getBookingDate());
+    ba.setImage(b.getImage());
+    Integer availability = mongoRepo.getAvailability(ba.getImage(), ba.getDate());
+    logger.info("Integer availability >>> "+availability);
+    if(availability.equals(0)){
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("No racks available on selected date");
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     } else {
-      wnSvc.sendNotification(token, "bookings");
-      emailSvc.bookingConfirmationEmail(name, b);
-      return ResponseEntity.ok("{\"status\":\"success\"}");
+      if(availability.equals(-10)) {
+        logger.info("here");
+        ba.setAvailability(b.getRackCount());
+        Integer success = upRepo.addBooking(b);
+
+        if(success.equals(0)) {
+          ErrorResponse errorResponse = new ErrorResponse();
+          errorResponse.setMessage("Booking failed");
+          return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        mongoRepo.insertAvailability(ba);
+      }else {
+        Integer availabilityToUpdate = availability - 1;
+        ba.setAvailability(availabilityToUpdate);
+        Integer success = upRepo.addBooking(b);
+
+        if(success == 0) {
+          ErrorResponse errorResponse = new ErrorResponse();
+          errorResponse.setMessage("Booking failed");
+          return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        }
+        mongoRepo.updateAvailability(ba);
+      }
     }
+
+    wnSvc.sendNotification(token, "bookings");
+    //emailSvc.bookingConfirmationEmail(name, b);
+    return ResponseEntity.ok("{\"status\":\"success\"}");
+    
   }
 
   @GetMapping(path="/bookings") 
@@ -268,39 +313,51 @@ public class AngularController {
     return ResponseEntity.ok(arrayBuilder.build().toString());
   }
 
+  @DeleteMapping(path = "/deletebooking")
+  public ResponseEntity<?> deleteBooking(@RequestBody String booking, @RequestHeader(value = "token", required = true) String token, @RequestHeader(value = "name", required = true) String name) throws Exception {
+    logger.info(booking);
+    //TODO - delete booking
+
+
+
+    return ResponseEntity.ok("{\"status\":\"success\"}");
+  }
+
+
   //MongoDB
   @GetMapping(path = "/check")
   public ResponseEntity<?> checkAvailability(@RequestParam(value = "image", required = true) String image) throws Exception{
-    if(mongoRepo.getAvailability(image) == null) {
-      ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("Availability full");
-      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    }
-
-    Integer availability = mongoRepo.getAvailability(image);
+    Integer availability = mongoRepo.getCurrentAvailability(image);
     return ResponseEntity.ok(String.valueOf(availability));
   }
 
-  @PostMapping(path = "/update")
-  public ResponseEntity<?> updateAvailability(@RequestBody String result) throws Exception {
-    Result r = Result.createJson(result);
-    Integer currAvailability = mongoRepo.getAvailability(r.getImage());
-    if(currAvailability == -10) mongoRepo.insertAvailability(r);
-    else {
-      Integer availabilityToUpdate = currAvailability - 1;
-      r.setAvailability(availabilityToUpdate);
-      //mongoRepo.updateAvailability(r);
+  @PostMapping(path = "/updateminus")
+  public ResponseEntity<?> minusAvailability(@RequestBody String booking) throws Exception {
+    BookingAvailability ba = BookingAvailability.createJson(booking);
+    Integer availability = mongoRepo.getAvailability(ba.getImage(), ba.getDate());
+    if(availability == -10) mongoRepo.insertAvailability(ba);
+    else if(availability == 0){
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("No racks available on selected date");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    } else {
+      Integer availabilityToUpdate = availability - 1;
+      ba.setAvailability(availabilityToUpdate);
+      mongoRepo.updateAvailability(ba);
     }
 
     return ResponseEntity.ok("{\"status\":\"success\"}");
+  }
 
-    // if(success == 0) {
-    //   ErrorResponse errorResponse = new ErrorResponse();
-    //   errorResponse.setMessage("MongoDB update failed");
-    //   return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    // } else {
-    //   return ResponseEntity.ok("{\"status\":\"success\"}");
-    // }
+  @PostMapping(path = "/updateadd")
+  public ResponseEntity<?> addAvailability(@RequestBody String booking) throws Exception {
+    BookingAvailability ba = BookingAvailability.createJson(booking);
+    Integer availability = mongoRepo.getAvailability(ba.getImage(), ba.getDate());
+    Integer availabilityToUpdate = availability + 1;
+    ba.setAvailability(availabilityToUpdate);
+    mongoRepo.updateAvailability(ba);
+
+    return ResponseEntity.ok("{\"status\":\"success\"}");
   }
 
 

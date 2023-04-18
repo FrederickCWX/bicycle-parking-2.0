@@ -47,11 +47,11 @@ export class ParkingService {
     return firstValueFrom(
       this.http.get<Results[]>(`${this.apiServerUrl}/api/results`, {params})
     )
-    .then(result => {
-      console.info("Search Results >>> ", result);
-      this.router.navigate(['/results'])
-      return result
-    })
+      .then(result => {
+        console.info("Search Results >>> ", result);
+        //this.router.navigate(['/results'])
+        return result
+      })
   }
 
   //Favourites
@@ -91,24 +91,41 @@ export class ParkingService {
   */
 
   deleteFavourite(favourite: Favourites, email: string): Promise<string> {
-    
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'email': email
-      })
-    };
 
-    console.info('TO DELETE >>> ', favourite.parkingId)
-    console.info('Email >>> ', email)
     const headers = new HttpHeaders().set("email", email)
-    const parkingId: string = favourite.parkingId as string
-    //console.info(parkingId)
-    const parkingEmail: string = parkingId+email
-    console.info(parkingEmail)
+    const jsonString = JSON.stringify(favourite)
+    console.info(jsonString)
+
     return firstValueFrom(
-      this.http.delete<string>(`${this.apiServerUrl}/api/favourites/${parkingEmail}`)
+        this.http.delete<string>(`${this.apiServerUrl}/api/deletefav`,
+        {
+          headers: headers,
+          body: jsonString
+        })
     )
+    .then(result => {
+      console.info("Delete favourite status >>> ", result)
+      return result
+    })
   }
+    
+    // const httpOptions = {
+    //   headers: new HttpHeaders({
+    //     'email': email
+    //   })
+    // };
+
+    // console.info('TO DELETE >>> ', favourite.parkingId)
+    // console.info('Email >>> ', email)
+    // const headers = new HttpHeaders().set("email", email)
+    // const parkingId: string = favourite.parkingId as string
+    // //console.info(parkingId)
+    // const parkingEmail: string = parkingId+email
+    // console.info(parkingEmail)
+    // return firstValueFrom(
+    //   this.http.delete<string>(`${this.apiServerUrl}/api/favourites/${parkingEmail}`)
+    // )
+  //}
 
   /*
   deleteFavourites(favourite: Favourites, email: string): Promise<string> {
@@ -157,6 +174,25 @@ export class ParkingService {
     })
   }
 
+  removeBookings(booking: Bookings, name: string): Promise<string> {
+    const token = sessionStorage.getItem('token') as string
+    //const jsonString = JSON.stringify(booking)
+    const headers = new HttpHeaders().set("token", token).set("name", name)
+    console.info("Deleting booking...")
+
+    return firstValueFrom(
+      this.http.delete<string>(`${this.apiServerUrl}/api/deletebooking`,
+        {
+          headers,
+          body: JSON.stringify(booking)
+        })
+    )
+    .then(result => {
+      console.info("Remove booking status >>> ", result)
+      return result
+    })
+  }
+
 
   //MONGODB - available lots
   checkAvailability(image: string): Promise<Results[]>{
@@ -171,16 +207,31 @@ export class ParkingService {
     })
   }
 
-  updateAvailability(result: Results): Promise<string> {
-    const jsonString = JSON.stringify(result)
+  //to delete?
+  minusAvailability(booking: Bookings): Promise<string> {
+    const jsonString = JSON.stringify(booking)
 
     return firstValueFrom(
-      this.http.post<string>(`${this.apiServerUrl}/api/update`, jsonString)
+      this.http.post<string>(`${this.apiServerUrl}/api/updateminus`, jsonString)
     )
     .then(result => {
       console.info("Mongodb update status >>> ", result)
       return result
     })
   }
+
+  addAvailability(booking: Bookings): Promise<string> {
+    const jsonString = JSON.stringify(booking)
+
+    return firstValueFrom(
+      this.http.post<string>(`${this.apiServerUrl}/api/updateadd`, jsonString)
+    )
+    .then(result => {
+      console.info("Mongodb update status >>> ", result)
+      return result
+    })
+  }
+
+  
 
 }

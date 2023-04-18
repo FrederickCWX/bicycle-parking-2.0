@@ -40,13 +40,13 @@ export class ResultComponent implements OnInit{
     let result = this.results[i]
     console.info('Add to favourites (Result Component) >>> ', result)
     this.parkingSvc.addFavourites(result, this.getSessionUserEmail())
-    .then(result => {
-      console.info('>>> Save favourites status: ', result)
-      this.router.navigate(['/favourites'])
-    })
-    .catch(error => {
-      console.error('>>> Error: ', error)
-    })
+      .then(result => {
+        console.info('>>> Save favourites status: ', result)
+        this.router.navigate(['/favourites'])
+      })
+      .catch(error => {
+        console.error('>>> Error: ', error)
+      })
   }
 
   processBooking(i: number) {
@@ -63,17 +63,20 @@ export class ResultComponent implements OnInit{
     this.parkingSvc.addBooking(booking, sessionStorage.getItem('name') as string)
       .then(result => {
         console.info('>>> Booking status: ', result)
-        this.router.navigate(['/booking'])
-
-        //TODO add update to mongodb
+        this.router.navigate(['/bookings'])
       })
       .catch(error => {
         if (error instanceof HttpErrorResponse) {
           console.info('HTTP Error Response')
           const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message;
           console.error('>>> error: ', error)
-          this.errorMessage=String(constErrorMessage)
-          this.listen();
+          if(String(constErrorMessage) === 'Invalid booking date' || 
+            String(constErrorMessage) === 'Booking already exists' || 
+            String(constErrorMessage) === 'Booking failed' ||
+            String(constErrorMessage) === 'No racks available on selected date') {
+            this.errorMessage=String(constErrorMessage)
+            this.listen();
+          }
         }
       })
   }

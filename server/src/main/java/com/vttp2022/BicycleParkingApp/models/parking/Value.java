@@ -24,6 +24,7 @@ public class Value implements Serializable{
   private BigDecimal lat;
   private BigDecimal lng;
   private String rackType;
+  private Integer availability;
   private Integer rackCount;
   private String shelter;
 
@@ -74,6 +75,9 @@ public class Value implements Serializable{
   public void setRackType(String rackType) {
     this.rackType = rackType;
   }
+
+  public Integer getAvailability() { return availability; }
+  public void setAvailability(Integer availability) { this.availability = availability; }
 
   public Integer getRackCount() {
     return rackCount;
@@ -196,6 +200,7 @@ public class Value implements Serializable{
     .add("lng", lng)
     .add("rackType", rackType)
     .add("rackCount", rackCount)
+    .add("availability", availability)
     .add("sheltered", shelter)
     .build();
         

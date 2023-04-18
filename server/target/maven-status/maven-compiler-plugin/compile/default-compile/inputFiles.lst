@@ -10,7 +10,7 @@
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/ErrorResponse.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Parkings.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Value.java
-/Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mongodb/Result.java
+/Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mongodb/BookingAvailability.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mysql/UserParking.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Query.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/User.java

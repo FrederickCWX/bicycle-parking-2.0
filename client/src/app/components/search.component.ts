@@ -32,19 +32,19 @@ export class SearchComponent implements OnInit{
     const search: Search = this.searchForm.value as Search
     this.storeSearchDetails(String(search.postal), String(search.radius*1000))
     this.parkingSvc.getResults(search.postal, search.radius)
-    .then(result => {
-      console.info('>>> Search result: ', result)
-      this.parkingSvc.results = result
-      this.router.navigate(['/result'])
-    })
-    .catch(error => {
-      if (error instanceof HttpErrorResponse) {
-        const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message
-        console.error('>>> error: ', error)
-        this.errorMessage = String(constErrorMessage)
-        this.listen()
-      }
-    })
+      .then(result => {
+        console.info('>>> Search result: ', result)
+        this.parkingSvc.results = result
+        this.router.navigate(['/result'])
+      })
+      .catch(error => {
+        if (error instanceof HttpErrorResponse) {
+          const constErrorMessage = typeof error.error === 'string' ? error.error : error.error.message
+          console.error('>>> error: ', error)
+          this.errorMessage = String(constErrorMessage)
+          this.listen()
+        }
+      })
   }
 
   urlSearch(radius: number, postal: number) {

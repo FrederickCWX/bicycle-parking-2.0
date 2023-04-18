@@ -1,7 +1,9 @@
 package com.vttp2022.BicycleParkingApp.services;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +16,13 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.vttp2022.BicycleParkingApp.models.mysql.Bookings;
+import com.vttp2022.BicycleParkingApp.models.parking.Parkings;
+import com.vttp2022.BicycleParkingApp.models.parking.Query;
+import com.vttp2022.BicycleParkingApp.models.parking.Value;
+import com.vttp2022.BicycleParkingApp.models.postal.Postal;
+import com.vttp2022.BicycleParkingApp.models.postal.Results;
 import com.vttp2022.BicycleParkingApp.repositories.UserParkingRepository;
+import com.vttp2022.BicycleParkingApp.utilities.SortByDistance;
 
 import static com.vttp2022.BicycleParkingApp.repositories.Queries.*;
 
@@ -26,6 +34,12 @@ public class TelegramBot extends TelegramLongPollingBot{
 
     @Autowired
     private UserParkingRepository upRepo;
+
+    @Autowired
+    private PostalAPIService postalSvc;
+
+    @Autowired
+    private ParkingAPIService parkingSvc;
 
     private static final Logger logger = LoggerFactory.getLogger(TelegramBot.class);
 
@@ -40,6 +54,56 @@ public class TelegramBot extends TelegramLongPollingBot{
         if(command.equals("/reservation")) {
             logger.info(String.format("User: %s is requesting for reservations list", update.getMessage().getFrom().getFirstName()));
             String message = "Please enter the email used to register on the web application";
+            SendMessage response = new SendMessage();
+            response.setChatId(update.getMessage().getChatId().toString());
+            response.setText(message);
+            try {
+                execute(response);
+            } catch (TelegramApiException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(isPostal(command)) {
+            String message = "";
+            Query q = new Query();
+            Optional<Postal> optPostal = postalSvc.getPostalDetails(Integer.parseInt(command));
+            while(true) {
+                if(Postal.getFound() == 0){
+                    message = "Invalid postal code";
+                    break;
+                }
+                List<Results> results = Postal.getResults();
+                if(results.size() >= 1){
+                q.setLat(results.get(0).getLatitude());
+                q.setLng(results.get(0).getLongitude());
+                }
+                q.setRadius(0.25);
+                Optional<Parkings> optParking = parkingSvc.findParking(q);
+
+                if(optParking.isEmpty()){
+                    message = "No bicycle bays found within 250m";
+                    break;
+                }
+
+                Collections.sort(Parkings.getValue(), new SortByDistance());
+                List<Value> val = Parkings.getValue();
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("There are "+val.size()+" bicycle bays found within 250metres of Singapore "+command);
+                for(Value v: val) {
+                    sb.append("\n\nDescription: "+v.getDescription());
+                    sb.append("\nRack Type: "+v.getRackType());
+                    sb.append("\nRack Count: "+v.getRackCount());
+                    sb.append("\nSheltered: "+v.getShelter());
+                }
+                
+                message = sb.toString();
+                break;
+
+            }
+
+
             SendMessage response = new SendMessage();
             response.setChatId(update.getMessage().getChatId().toString());
             response.setText(message);
@@ -166,6 +230,15 @@ public class TelegramBot extends TelegramLongPollingBot{
     @Override
     public String getBotToken() {
         return "6143365163:AAEKyL6zfGPS_54MSEn8SfDV2gfi9udFv1U";
+    }
+
+    public boolean isPostal(String str) {
+        if(str.length() != 6) return false;
+
+        for(Character c: str.toCharArray()){
+            if(!Character.isDigit(c)) return false;
+        }
+        return true;
     }
   
 }

@@ -11,10 +11,11 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonReader;
 import jakarta.json.JsonString;
 
-public class Result {
+public class BookingAvailability {
 
   private String image;
   private Integer availability;
+  private String date;
 
   public String getImage() { return image; }
   public void setImage(String image) { this.image = image; }
@@ -22,20 +23,25 @@ public class Result {
   public Integer getAvailability() { return availability; }
   public void setAvailability(Integer availability) { this.availability = availability; }
 
-  public static Result createJson(String json) throws IOException {
-    Result r = new Result();
+  public String getDate() { return date; }
+  public void setDate(String date) {this.date = date; }
+
+  public static BookingAvailability createJson(String json) throws IOException {
+    BookingAvailability ba = new BookingAvailability();
 
     try(InputStream in = new ByteArrayInputStream(json.getBytes())) {
       JsonReader jr = Json.createReader(in);
       JsonObject jo = jr.readObject();
 
       JsonString jsImg = jo.getJsonString("image");
-      r.image = jsImg.getString();
+      ba.image = jsImg.getString();
+      JsonString jsDate = jo.getJsonString("bookingDate");
+      ba.date = jsDate.getString();
       JsonNumber jnAvailability = jo.getJsonNumber("availability");
-      r.availability = jnAvailability.intValue();
+      if(jnAvailability != null) ba.availability = jnAvailability.intValue();
 
     }
-    return r;
+    return ba;
   }
 
   // private String parkingId;
