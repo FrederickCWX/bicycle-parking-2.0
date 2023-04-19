@@ -16,34 +16,6 @@ public class EmailSenderService {
   @Autowired
   private JavaMailSender mailSender;
 
-  public void sendEmail(String toEmail, String subject, String body) {
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom("bicycleparkingapp@gmail.com");
-    message.setTo(toEmail);
-    message.setText(body);
-    message.setSubject(subject);
-
-    mailSender.send(message);
-
-    logger.info("Mail Sent successfully to "+toEmail);
-    
-  }
-
-  //The following location has been added to your favourites.\n\nWarm Regards,\nBicycle Parking Team
-
-  public void sendFavouritesEmail(String toEmail, String example) {
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom("bicycleparkingapp@gmail.com");
-    message.setTo(toEmail);
-    message.setText(String.format("The following location has been added to your favourites.\n\nWarm Regards,\nBicycle Parking Team", example));
-    message.setSubject("Bicycle parking added to favourites");
-
-    mailSender.send(message);
-
-    logger.info("Mail Sent successfully to "+toEmail);
-    
-  }
-
   public void bookingConfirmationEmail(String name, Bookings b) {
     SimpleMailMessage message = new SimpleMailMessage();
     message.setFrom("bicycleparkingapp@gmail.com");
@@ -60,22 +32,29 @@ public class EmailSenderService {
     mailSender.send(message);
 
     logger.info("Booking confirmation email successfully to "+b.getEmail());
-    /*
-     * Dear *name*,
-     * 
-     * Your bicycle parking rack booking has been confirmed on *date*, at the following bicycle parking bay location:
-     * Description: *description*
-     * Rack Type: *rackType*
-     * Rack Count: *rackCount*
-     * Sheltered: *sheltered*
-     * 
-     * Thank you for using SG Bicycle Parking.
-     * 
-     * Warm Regards,
-     * SG Bicycle Parking team.
-     * This is an automatically generated email. Please do not reply.
-     */
-
   }
+
+  // public void sendEmail(String toEmail, String subject, String body) {
+  //   SimpleMailMessage message = new SimpleMailMessage();
+  //   message.setFrom("bicycleparkingapp@gmail.com");
+  //   message.setTo(toEmail);
+  //   message.setText(body);
+  //   message.setSubject(subject);
+
+  //   mailSender.send(message);
+  //   logger.info("Mail Sent successfully to "+toEmail);
+    
+  // }
+
+  // public void sendFavouritesEmail(String toEmail, String example) {
+  //   SimpleMailMessage message = new SimpleMailMessage();
+  //   message.setFrom("bicycleparkingapp@gmail.com");
+  //   message.setTo(toEmail);
+  //   message.setText(String.format("The following location has been added to your favourites.\n\nWarm Regards,\nBicycle Parking Team", example));
+  //   message.setSubject("Bicycle parking added to favourites");
+
+  //   mailSender.send(message);
+  //   logger.info("Mail Sent successfully to "+toEmail);
+  // }
   
 }

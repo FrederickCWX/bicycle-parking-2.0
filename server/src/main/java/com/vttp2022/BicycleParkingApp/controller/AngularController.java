@@ -281,7 +281,7 @@ public class AngularController {
       @RequestHeader(value = "image", required = true) String image,
       @RequestHeader(value = "description", required = true) String description
       ) throws Exception {
-        
+
     Integer success = upRepo.removeBooking(email, bookingDate, description);
     
     BookingAvailability ba = new BookingAvailability();
@@ -293,7 +293,6 @@ public class AngularController {
 
     return ResponseEntity.ok("{\"status\":\"success\"}");
   }
-
 
   //MongoDB
   @GetMapping(path = "/check")
@@ -316,7 +315,6 @@ public class AngularController {
       ba.setAvailability(availabilityToUpdate);
       mongoRepo.updateAvailability(ba);
     }
-
     return ResponseEntity.ok("{\"status\":\"success\"}");
   }
 
@@ -330,128 +328,4 @@ public class AngularController {
 
     return ResponseEntity.ok("{\"status\":\"success\"}");
   }
-
-
-
-
-
-  /*
-  @DeleteMapping(path="/deletefav/{parkingId}")
-  public ResponseEntity<?> deleteFavourites(@PathVariable String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
-
-    logger.info("ParkingID >>> "+ parkingId);
-    logger.info("Email >>> "+email);
-    Integer success = upRepo.deleteFavourites(parkingId, email);
-
-    if(success == 0) {
-      ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("Failed to remove from favourites");
-      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    } else {
-      return ResponseEntity.ok("{\"status\":\"success\"}");
-    }
-  }
-  */
-  
-  //TODO!!!
-  // @DeleteMapping(path="/deletefav")
-  // public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
-
-  //   logger.info("ParkingID >>> "+ parkingId);
-  //   logger.info("Email >>> "+email);
-  //   Integer success = upRepo.deleteFavourites(parkingId, email);
-
-  //   if(success == 0) {
-  //     ErrorResponse errorResponse = new ErrorResponse();
-  //     errorResponse.setMessage("Failed to remove from favourites");
-  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-  //   } else {
-  //     return ResponseEntity.ok("{\"status\":\"success\"}");
-  //   }
-  // }
-
-  // @DeleteMapping("/rmvfav")
-  // public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
-  //   logger.info("remove favourite");
-  //   // logger.info("ParkingID >>> "+ parkingId);
-  //   // logger.info("Email >>> "+email);
-  //   logger.info(parkingId);
-  //   //Favourites f = Favourites.createJson(favourite);
-  //   Integer success = upRepo.deleteFavourites(parkingId, email);
-
-  //   if(success == 0) {
-  //     ErrorResponse errorResponse = new ErrorResponse();
-  //     errorResponse.setMessage("Failed to remove from favourites");
-  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-  //   } else {
-  //     return ResponseEntity.ok("{\"status\":\"success\"}");
-  //   }
-  // }
-
-
-  /*
-  @PostMapping(path="/favourites/save", consumes = {"application/json"})
-  public ResponseEntity<?> addFavourites(@RequestBody MultiValueMap<String, String> result, @RequestHeader(value = "email", required = true) String email) throws Exception {
-
-    logger.info("Attempting to add favourites, User: "+email);
-    logger.info(result.toString());
-
-    Coord coord = new Coord();
-    coord.setLat(new BigDecimal(result.getFirst("lat")));
-    coord.setLng(new BigDecimal(result.getFirst("lng")));
-
-    Favourites favourites = new Favourites();
-    favourites.setParkingId(result.getFirst("parkingId"));
-    favourites.setImage(result.getFirst("image"));
-    favourites.setDescription(result.getFirst("description"));
-    favourites.setRackType(result.getFirst("rackType"));
-    favourites.setRackCount(Integer.parseInt(result.getFirst("rackCount")));
-    favourites.setCoord(coord);
-
-    Favourites checkFavourites = upRepo.checkFavouritesExist(favourites.getImage());
-
-    Integer success;
-
-    if(checkFavourites != null) {
-      success = upRepo.addExistingFavourites(checkFavourites.getParkingId(), email);
-    }
-
-    success = upRepo.addNewFavourites(favourites, email);
-
-    if(success == 0) {
-      ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("Failed to save to favourites");
-      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    } else {
-      return ResponseEntity.ok("{\"status\":\"success\"}");
-    }
-  }
-  */
-
-  /*
-  @PostMapping(path="/favourites/save")
-  public ResponseEntity<?> addFavourites(
-      @RequestParam(value = "id", required = true) String id,
-      @RequestParam(value = "image", required = true) String image,
-      @RequestParam(value = "description", required = true) String description,
-      @RequestParam(value = "rackType", required = true) String rackType,
-      @RequestParam(value = "rackCount", required = true) Integer rackCount,
-      @RequestParam(value = "sheltered", required = true) String sheltered,
-      @RequestParam(value = "lat", required = true) String lat,
-      @RequestParam(value = "sheltered", required = true) String lng,
-      @RequestParam(value = "email", required = true) String email
-      ) throws Exception {
-
-    Favourites favourites = new Favourites();
-    favourites = upRepo.checkFavouritesExist(image);
-
-    if(favourites == null) {
-      Favourites f = new Favourites();
-      upRepo.addFavourites(favourites, email)
-    }
-
-    return null;
-  }
-  */
-
 } 

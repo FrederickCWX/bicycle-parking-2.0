@@ -1,7 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 import { Favourites } from '../model';
 import { ParkingService } from '../parking.service';
 import { Location } from '@angular/common';

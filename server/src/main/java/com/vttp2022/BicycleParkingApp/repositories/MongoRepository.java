@@ -1,10 +1,7 @@
 package com.vttp2022.BicycleParkingApp.repositories;
 
 import java.time.LocalDate;
-import java.util.LinkedList;
-import java.util.List;
 
-import org.bson.Document;
 import org.slf4j.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -14,9 +11,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import com.vttp2022.BicycleParkingApp.models.mongodb.BookingAvailability;
-
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
 
 @Repository
 public class MongoRepository {
@@ -74,30 +68,4 @@ public class MongoRepository {
 
     mongoTemplate.updateFirst(query, update, C_BOOKING_BAY);
   }
-
-
-
-  //public void insertAvailability(BookingAvailability ba) throws Exception {
-    // logger.info("Inserting to Mongo...");
-    // logger.info("Image >> " +ba.getImage());
-    // logger.info("Availability >> "+ba.getAvailability());
-    // logger.info("Date >> "+ba.getDate());
-
-    // //mongoTemplate.insert(ba, C_BOOKING_BAY);
-    // JsonObject json = Json.createObjectBuilder()
-    //     .add("image", ba.getImage())
-    //     .add("availability", ba.getAvailability())
-    //     .add("date", ba.getDate())
-    //     .build();
-    
-    // logger.info(json.toString());
-    
-    // mongoTemplate.insert(json.toString(), C_BOOKING_BAY);
-
-    //Document bay = Document.parse(json.toString());
-    //Document inserted = mongoTemplate.insert(bay, C_BOOKING_BAY);
-    
-    //logger.info("Inserted to MongoDB >>> "+inserted);
-  //}
-  
 }

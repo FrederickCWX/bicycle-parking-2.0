@@ -13,7 +13,6 @@ export class AppComponent implements OnInit{
   title = 'bicycleparking';
   message:any = null;
 
-  //name: string | null = null 
   name = sessionStorage.getItem('name')
   nameExist: boolean = false
   constructor(private router: Router) {}
@@ -22,9 +21,7 @@ export class AppComponent implements OnInit{
     sessionStorage.removeItem('name')
     sessionStorage.removeItem('email')
     sessionStorage.removeItem('errorMessage')
-    //this.errorMessage = sessionStorage.getItem('errorMessage') 
     this.requestPermission()
-    //this.listen();
   }
   requestPermission() {
     const messaging = getMessaging();
@@ -50,16 +47,4 @@ export class AppComponent implements OnInit{
     sessionStorage.removeItem('email')
     this.router.navigate(['/'])
   }
-
-  /*
-  listen() {
-    const messaging = getMessaging();
-    onMessage(messaging, (payload) => {
-      console.log('Message received. ', payload);
-      this.message=payload;
-    });
-  }
-  */
-
-  
 }

@@ -1,7 +1,7 @@
 import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-import { firstValueFrom, Observable} from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { environment } from "src/environments/environment";
 import { Bookings, Favourites, Results, SBResponse, UserDetails } from "./model";
 
@@ -49,7 +49,6 @@ export class ParkingService {
     )
       .then(result => {
         console.info("Search Results >>> ", result);
-        //this.router.navigate(['/results'])
         return result
       })
   }
@@ -163,7 +162,6 @@ export class ParkingService {
     })
   }
 
-  //to delete?
   minusAvailability(booking: Bookings): Promise<string> {
     const jsonString = JSON.stringify(booking)
 
@@ -187,77 +185,5 @@ export class ParkingService {
       return result
     })
   }
-
-
-
-
-  // deleteFavourite(favourite: Favourites, email: string): Promise<SBResponse> {
-  //   const id = favourite.parkingId as string
-  //   const headers = new HttpHeaders().set("email", email).set("parkingId",id)
-
-  //   return firstValueFrom(
-  //       this.http.get<SBResponse>(`${this.apiServerUrl}/api/rmvfav`,
-  //         {
-  //           headers: headers
-  //         })
-  //   )
-  //   .then(result => {
-  //     console.info("Delete favourite status >>> ", result)
-  //     return result
-  //   })
-
-    // const headers = new HttpHeaders({
-    //   'email': email,
-    //   'parkingId': favourite.parkingId
-    // });
-
-    //console.info(favourite.parkingId)
-    //const jsonString = JSON.stringify(favourite)
-    //console.info(jsonString)
-
-    // let headers: HttpHeaders = new HttpHeaders();
-    // headers = headers.set("email", email)
-    // headers = headers.set("parkingId",favourite.parkingId)
-
-    // const params = new HttpParams().set("email", email).set("parkingId",favourite.parkingId)
-  //}
-    
-    // const httpOptions = {
-    //   headers: new HttpHeaders({
-    //     'email': email
-    //   })
-    // };
-
-    // console.info('TO DELETE >>> ', favourite.parkingId)
-    // console.info('Email >>> ', email)
-    // const headers = new HttpHeaders().set("email", email)
-    // const parkingId: string = favourite.parkingId as string
-    // //console.info(parkingId)
-    // const parkingEmail: string = parkingId+email
-    // console.info(parkingEmail)
-    // return firstValueFrom(
-    //   this.http.delete<string>(`${this.apiServerUrl}/api/favourites/${parkingEmail}`)
-    // )
-  //}
-
-  /*
-  deleteFavourites(favourite: Favourites, email: string): Promise<string> {
-
-    console.info('TO DELETE >>> ', favourite.parkingId)
-    console.info('Email >>> ', email)
-    const params = new HttpParams().set("email", email).set("parkingId", favourite.parkingId)
-    //console.info(headers)
-
-    return firstValueFrom(
-      this.http.delete<string>(`${this.apiServerUrl}/api/deletefav`, {params})
-    )
-    .then(result => {
-      console.info("Favourites delete status >>> ", result)
-      return result
-    })
-  }
-  */
-
-  
 
 }
