@@ -27,13 +27,6 @@ public class UserParkingRepository {
   private JdbcTemplate jdbcTemplate;
 
   public Integer createUser(String name, String password, String email) throws Exception {
-    /* 
-    Integer success = jdbcTemplate.update(SQL_INSERT_USER_DETAILS, user.getName(), user.getPassword(), user.getEmail());
-
-    jdbcTemplate.update(SQL_UPDATE_USER_FROM_USER_DETAILS);
-
-    return success;
-    */
     return jdbcTemplate.update(SQL_INSERT_USER_DETAILS, name, password, email);
   }
 
@@ -139,7 +132,7 @@ public class UserParkingRepository {
       LocalDate currentDate = LocalDate.now();
       boolean correctDate = date.isAfter(currentDate) || date.equals(currentDate);
       if(correctDate) bookingsList.add(b);
-      else removeBooking(b);
+      else removeBooking(b.getEmail(), b.getBookingDate(), b.getDescription());
     }
 
     if(bookingsList.size()<=0){
@@ -150,8 +143,8 @@ public class UserParkingRepository {
     return bookingsList;
   }
 
-  public Integer removeBooking(Bookings b) {
-    return jdbcTemplate.update(SQL_REMOVE_BOOKING, b.getEmail(), b.getBookingDate(), b.getImage());
+  public Integer removeBooking(String email, String date, String description) {
+    return jdbcTemplate.update(SQL_REMOVE_BOOKING, email, date, description);
   }
 
   public static List<Bookings> getTeleBooking(String email) {

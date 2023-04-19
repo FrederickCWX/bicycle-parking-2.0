@@ -41,7 +41,7 @@ public class Queries {
 
   public static final String SQL_GET_BOOKINGS_BY_USER_EMAIL = "select * from bookings where email=?";
 
-  public static final String SQL_REMOVE_BOOKING = "delete from bookings where email=? and booking_date=? and image=?";
+  public static final String SQL_REMOVE_BOOKING = "delete from bookings where email=? and booking_date=? and description=?";
 
 
   

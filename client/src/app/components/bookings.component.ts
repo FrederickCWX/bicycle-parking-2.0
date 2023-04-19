@@ -44,9 +44,10 @@ export class BookingsComponent implements OnInit{
 
   removeBooking(i: number) {
     let booking = this.bookings[i]
-    this.parkingSvc.removeBookings(booking, sessionStorage.getItem("name") as string)
+    this.parkingSvc.removeBookings(booking)
       .then(result => {
         console.info('>>> Cancel booking status: ', result)
+        this.refreshPage()
       })
       .catch(error => {
         console.error('>>> error: ', error)
@@ -60,6 +61,12 @@ export class BookingsComponent implements OnInit{
 
   setErrorMessage() {
     sessionStorage.setItem('errorMessage', 'Login to view your bookings')
+  }
+
+  refreshPage() {
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate(['/bookings']);
+    }); 
   }
 
 }

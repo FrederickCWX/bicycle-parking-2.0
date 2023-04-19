@@ -136,66 +136,10 @@ public class AngularController {
     }
   }
 
-  /*
-  @DeleteMapping(path="/deletefav/{parkingId}")
-  public ResponseEntity<?> deleteFavourites(@PathVariable String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
-
-    logger.info("ParkingID >>> "+ parkingId);
-    logger.info("Email >>> "+email);
-    Integer success = upRepo.deleteFavourites(parkingId, email);
-
-    if(success == 0) {
-      ErrorResponse errorResponse = new ErrorResponse();
-      errorResponse.setMessage("Failed to remove from favourites");
-      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-    } else {
-      return ResponseEntity.ok("{\"status\":\"success\"}");
-    }
-  }
-  */
-  
-  //TODO!!!
-  // @DeleteMapping(path="/deletefav")
-  // public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
-
-  //   logger.info("ParkingID >>> "+ parkingId);
-  //   logger.info("Email >>> "+email);
-  //   Integer success = upRepo.deleteFavourites(parkingId, email);
-
-  //   if(success == 0) {
-  //     ErrorResponse errorResponse = new ErrorResponse();
-  //     errorResponse.setMessage("Failed to remove from favourites");
-  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-  //   } else {
-  //     return ResponseEntity.ok("{\"status\":\"success\"}");
-  //   }
-  // }
-
-  // @DeleteMapping("/rmvfav")
-  // public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
-  //   logger.info("remove favourite");
-  //   // logger.info("ParkingID >>> "+ parkingId);
-  //   // logger.info("Email >>> "+email);
-  //   logger.info(parkingId);
-  //   //Favourites f = Favourites.createJson(favourite);
-  //   Integer success = upRepo.deleteFavourites(parkingId, email);
-
-  //   if(success == 0) {
-  //     ErrorResponse errorResponse = new ErrorResponse();
-  //     errorResponse.setMessage("Failed to remove from favourites");
-  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
-  //   } else {
-  //     return ResponseEntity.ok("{\"status\":\"success\"}");
-  //   }
-  // }
-
   @DeleteMapping(path = "/rmvfav")
   public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
     logger.info("remove favourite");
-    // logger.info("ParkingID >>> "+ parkingId);
-    // logger.info("Email >>> "+email);
     logger.info(parkingId);
-    //Favourites f = Favourites.createJson(favourite);
     Integer success = upRepo.deleteFavourites(parkingId, email);
 
     if(success == 0) {
@@ -331,15 +275,20 @@ public class AngularController {
   }
 
   @DeleteMapping(path = "/deletebooking")
-  public ResponseEntity<?> deleteBooking(@RequestBody String booking, @RequestHeader(value = "token", required = true) String token, @RequestHeader(value = "name", required = true) String name) throws Exception {
-    logger.info(booking);
+  public ResponseEntity<?> deleteBooking(
+      @RequestHeader(value = "email", required = true) String email,
+      @RequestHeader(value = "bookingDate", required = true) String bookingDate,
+      @RequestHeader(value = "image", required = true) String image,
+      @RequestHeader(value = "description", required = true) String description
+      ) throws Exception {
+    //logger.info(booking);
     //TODO - delete booking
-    Bookings b = Bookings.createJson(booking);
-    Integer success = upRepo.removeBooking(b);
+    //Bookings b = Bookings.createJson(booking);
+    Integer success = upRepo.removeBooking(email, bookingDate, description);
     
     BookingAvailability ba = new BookingAvailability();
-    ba.setImage(b.getImage());
-    ba.setDate(b.getBookingDate());
+    ba.setImage(image);
+    ba.setDate(bookingDate);
     Integer currAvailability = mongoRepo.getAvailability(ba.getImage(), ba.getDate());
     ba.setAvailability(currAvailability+1);
     mongoRepo.updateAvailability(ba);
@@ -385,6 +334,61 @@ public class AngularController {
   }
 
 
+
+
+
+  /*
+  @DeleteMapping(path="/deletefav/{parkingId}")
+  public ResponseEntity<?> deleteFavourites(@PathVariable String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
+
+    logger.info("ParkingID >>> "+ parkingId);
+    logger.info("Email >>> "+email);
+    Integer success = upRepo.deleteFavourites(parkingId, email);
+
+    if(success == 0) {
+      ErrorResponse errorResponse = new ErrorResponse();
+      errorResponse.setMessage("Failed to remove from favourites");
+      return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    } else {
+      return ResponseEntity.ok("{\"status\":\"success\"}");
+    }
+  }
+  */
+  
+  //TODO!!!
+  // @DeleteMapping(path="/deletefav")
+  // public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "parkingId", required = true) String parkingId, @RequestHeader(value = "email", required = true) String email) throws Exception {
+
+  //   logger.info("ParkingID >>> "+ parkingId);
+  //   logger.info("Email >>> "+email);
+  //   Integer success = upRepo.deleteFavourites(parkingId, email);
+
+  //   if(success == 0) {
+  //     ErrorResponse errorResponse = new ErrorResponse();
+  //     errorResponse.setMessage("Failed to remove from favourites");
+  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  //   } else {
+  //     return ResponseEntity.ok("{\"status\":\"success\"}");
+  //   }
+  // }
+
+  // @DeleteMapping("/rmvfav")
+  // public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
+  //   logger.info("remove favourite");
+  //   // logger.info("ParkingID >>> "+ parkingId);
+  //   // logger.info("Email >>> "+email);
+  //   logger.info(parkingId);
+  //   //Favourites f = Favourites.createJson(favourite);
+  //   Integer success = upRepo.deleteFavourites(parkingId, email);
+
+  //   if(success == 0) {
+  //     ErrorResponse errorResponse = new ErrorResponse();
+  //     errorResponse.setMessage("Failed to remove from favourites");
+  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  //   } else {
+  //     return ResponseEntity.ok("{\"status\":\"success\"}");
+  //   }
+  // }
 
 
   /*
