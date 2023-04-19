@@ -147,9 +147,29 @@ public class UserParkingRepository {
     return jdbcTemplate.update(SQL_REMOVE_BOOKING, email, date, description);
   }
 
-  public static List<Bookings> getTeleBooking(String email) {
-    //List<Bookings> bList = getBookings(email);
-    return null;
+  public List<Bookings> getTeleBookings(String email) {
+    logger.info("Retrieving bookings >>> email");
+    UserParkingRepository upRepo = new UserParkingRepository();
+    upRepo.jdbcTemplate = new JdbcTemplate();
+    final SqlRowSet response = upRepo.jdbcTemplate.queryForRowSet(SQL_GET_BOOKINGS_BY_USER_EMAIL, email);
+
+    List<Bookings> bookingsList = new LinkedList<>();
+
+    while(response.next()) {
+      Bookings b = Bookings.create(response);
+      LocalDate date = LocalDate.parse(b.getBookingDate(), DateTimeFormatter.ISO_DATE);
+      LocalDate currentDate = LocalDate.now();
+      boolean correctDate = date.isAfter(currentDate) || date.equals(currentDate);
+      if(correctDate) bookingsList.add(b);
+      else removeBooking(b.getEmail(), b.getBookingDate(), b.getDescription());
+    }
+
+    if(bookingsList.size()<=0){
+      logger.info("No bookings found");
+      return null;
+    }
+
+    return bookingsList;
   }
   
 }

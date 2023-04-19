@@ -46,8 +46,8 @@
               <a *ngIf="!nameExist" class="nav-link" [routerLink]="['/']">LOGIN</a>
               <a *ngIf="nameExist" class="nav-link" [routerLink]="['/']">LOGOUT</a>
               -->
-              <a *ngIf="!nameExist" class="nav-link" (click)="newLogin()">LOGIN</a>
-              <a *ngIf="nameExist" class="nav-link" (click)="newLogin()">LOGOUT</a>
+              <a *ngIf="!name" class="nav-link" (click)="newLogin()">LOGIN</a>
+              <a *ngIf="name" class="nav-link" (click)="newLogin()">LOGOUT</a>
             </li>
           </ul>
         </div>

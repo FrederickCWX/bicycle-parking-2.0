@@ -1,6 +1,7 @@
 com/vttp2022/BicycleParkingApp/models/parking/Value.class
 com/vttp2022/BicycleParkingApp/repositories/UserParkingRepository.class
 com/vttp2022/BicycleParkingApp/utilities/TelegramBotUtility.class
+com/vttp2022/BicycleParkingApp/services/Tele.class
 com/vttp2022/BicycleParkingApp/models/parking/Parkings.class
 com/vttp2022/BicycleParkingApp/AppConfig$1.class
 com/vttp2022/BicycleParkingApp/services/WebNotificationService.class
@@ -26,4 +27,3 @@ com/vttp2022/BicycleParkingApp/services/EmailSenderService.class
 com/vttp2022/BicycleParkingApp/models/mysql/UserParking.class
 com/vttp2022/BicycleParkingApp/repositories/MongoRepository.class
 com/vttp2022/BicycleParkingApp/utilities/CalculateDistance.class
-com/vttp2022/BicycleParkingApp/models/User.class

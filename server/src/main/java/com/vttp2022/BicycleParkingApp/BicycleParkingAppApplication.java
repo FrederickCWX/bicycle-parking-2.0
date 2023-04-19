@@ -43,7 +43,7 @@ public class BicycleParkingAppApplication {
 	}
 	*/
 
-	/*
+	
 	@EventListener(ApplicationReadyEvent.class)
 	public void telegramBot(){
 
@@ -55,7 +55,7 @@ public class BicycleParkingAppApplication {
 		}
 
 	}
-	*/
+	
 
 
 

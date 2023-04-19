@@ -281,9 +281,7 @@ public class AngularController {
       @RequestHeader(value = "image", required = true) String image,
       @RequestHeader(value = "description", required = true) String description
       ) throws Exception {
-    //logger.info(booking);
-    //TODO - delete booking
-    //Bookings b = Bookings.createJson(booking);
+        
     Integer success = upRepo.removeBooking(email, bookingDate, description);
     
     BookingAvailability ba = new BookingAvailability();

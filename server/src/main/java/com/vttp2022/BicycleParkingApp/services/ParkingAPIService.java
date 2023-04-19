@@ -20,7 +20,7 @@ public class ParkingAPIService {
 
   private static String URL = "http://datamall2.mytransport.sg/ltaodataservice/BicycleParkingv2";
 
-  public Optional<Parkings> findParking(Query q){
+  public static Optional<Parkings> findParking(Query q){
     String apiKey = System.getenv("BICYCLE_PARKING_API_KEY");
 
     String parkingUrl = UriComponentsBuilder.fromUriString(URL)
