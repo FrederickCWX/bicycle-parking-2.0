@@ -40,29 +40,17 @@ export class FavouritesComponent implements OnInit{
         }
       })
   }
-
-  /*
-  deleteFavourite(i: number) {
-    let favourite = this.favourites[i]
-    this.parkingSvc.deleteFavourite(favourite, this.getSessionUserEmail()).subscribe(
-      () => {
-        console.log('Example deleted successfully');
-      },
-      error => {
-        console.error('Error deleting example:', error);
-      }
-    );
-  }
-  */
   
   deleteFavourite(i: number) {
     let favourite = this.favourites[i]
-    console.info('Delete from favourites >>> ', favourite)
-    console.info('User to delete from >>>', this.getSessionUserEmail())
-    this.parkingSvc.deleteFavourite(favourite, this.getSessionUserEmail())
+    const parkingId = favourite.parkingId as string
+    const email = this.getSessionUserEmail() as string
+    console.info('Fav Component: To delete >>> ', parkingId)
+    
+    this.parkingSvc.removeFavourite(parkingId, email)
     .then(result => {
       console.info('>>> Delete favourites status: ', result)
-      //this.router.navigate(['/favourites'])
+      this.router.navigate(['/favourites'])
     })
     .catch(error => {
       console.error('>>> Error: ', error)

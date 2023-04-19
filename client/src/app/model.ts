@@ -58,3 +58,7 @@ export interface Bookings {
   rackCount: number
   sheltered: string
 }
+
+export interface SBResponse {
+  status: string
+}

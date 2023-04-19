@@ -14,7 +14,8 @@ public class AppConfig {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/api/*")
-					.allowedOrigins("*");
+					.allowedOrigins("*")
+					.allowedMethods("PUT", "GET", "POST", "DELETE");
 			}
 		};
 	}

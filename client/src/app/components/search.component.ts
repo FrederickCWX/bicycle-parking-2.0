@@ -33,7 +33,6 @@ export class SearchComponent implements OnInit{
     this.storeSearchDetails(String(search.postal), String(search.radius*1000))
     this.parkingSvc.getResults(search.postal, search.radius)
       .then(result => {
-        console.info('>>> Search result: ', result)
         this.parkingSvc.results = result
         this.router.navigate(['/result'])
       })

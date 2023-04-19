@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
 import { firstValueFrom, Observable} from "rxjs";
 import { environment } from "src/environments/environment";
-import { Bookings, Favourites, Results, UserDetails } from "./model";
+import { Bookings, Favourites, Results, SBResponse, UserDetails } from "./model";
 
 @Injectable()
 export class ParkingService {
@@ -83,30 +83,49 @@ export class ParkingService {
     })
   }
 
-  /*
-  deleteFavourite(favourite: Favourites, email: string): Observable<void> {
-    const url = `${this.apiServerUrl}/api/favourites/${favourite.parkingId}/${email}`;
-    return this.http.delete<void>(url);
-  }
-  */
+  removeFavourite(parkingId: string, email: string): Promise<string> {
+    const headers = new HttpHeaders().set("email", email).set("parkingId", parkingId)
 
-  deleteFavourite(favourite: Favourites, email: string): Promise<string> {
-
-    const headers = new HttpHeaders().set("email", email)
-    const jsonString = JSON.stringify(favourite)
-    console.info(jsonString)
+    console.info('Headers >>>', headers)
 
     return firstValueFrom(
-        this.http.delete<string>(`${this.apiServerUrl}/api/deletefav`,
-        {
-          headers: headers,
-          body: jsonString
-        })
+      this.http.delete<string>(`${this.apiServerUrl}/api/rmvfav`, {headers: headers})
+    )
+    .then(result => {
+      console.info("Remove favourite status >>> ", result)
+      return result
+    })
+  }
+
+  deleteFavourite(favourite: Favourites, email: string): Promise<SBResponse> {
+    const id = favourite.parkingId as string
+    const headers = new HttpHeaders().set("email", email).set("parkingId",id)
+
+    return firstValueFrom(
+        this.http.get<SBResponse>(`${this.apiServerUrl}/api/rmvfav`,
+          {
+            headers: headers
+          })
     )
     .then(result => {
       console.info("Delete favourite status >>> ", result)
       return result
     })
+
+    // const headers = new HttpHeaders({
+    //   'email': email,
+    //   'parkingId': favourite.parkingId
+    // });
+
+    //console.info(favourite.parkingId)
+    //const jsonString = JSON.stringify(favourite)
+    //console.info(jsonString)
+
+    // let headers: HttpHeaders = new HttpHeaders();
+    // headers = headers.set("email", email)
+    // headers = headers.set("parkingId",favourite.parkingId)
+
+    // const params = new HttpParams().set("email", email).set("parkingId",favourite.parkingId)
   }
     
     // const httpOptions = {
@@ -146,7 +165,7 @@ export class ParkingService {
   */
 
   //Bookings
-  addBooking(booking: Bookings, name: string): Promise<string> {
+  addBooking(booking: Bookings, name: string): Promise<SBResponse> {
     const token = sessionStorage.getItem('token') as string
     const jsonString = JSON.stringify(booking)
     const headers = new HttpHeaders().set("token", token).set("name", name)
@@ -154,7 +173,7 @@ export class ParkingService {
     console.info('Headers >>> ', headers)
 
     return firstValueFrom(
-      this.http.post<string>(`${this.apiServerUrl}/api/savebooking`, jsonString, {headers})
+      this.http.post<SBResponse>(`${this.apiServerUrl}/api/savebooking`, jsonString, {headers})
     )
     .then(result => {
       console.info("Booking status >>> ", result)

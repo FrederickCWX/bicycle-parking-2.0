@@ -29,7 +29,6 @@ public class MongoRepository {
   private MongoTemplate mongoTemplate;
 
   public Integer getCurrentAvailability(String image) throws Exception{
-    //TODO - retrieve from MongoDB - done?
     String now = LocalDate.now().toString();
     Criteria c = Criteria
         .where("image").is(image)
@@ -38,14 +37,14 @@ public class MongoRepository {
         );
     Query q = Query.query(c);
 
-    List<String> response = mongoTemplate.findDistinct(q, "availability", C_BOOKING_BAY, String.class);
-    if(response.size()<=0) return -10;
-    logger.info("Image >>> "+image+", Availability >>> "+response.get(0));
-    return Integer.valueOf(response.get(0));
+    BookingAvailability response = mongoTemplate.findOne(q, BookingAvailability.class, C_BOOKING_BAY);
+    Integer empty = -10;
+    if(response == null) return empty;
+    logger.info("Image >>> "+image+", Availability >>> "+response.getAvailability());
+    return Integer.valueOf(response.getAvailability());
   }
 
   public Integer getAvailability(String image, String date) throws Exception{
-    //TODO - retrieve from MongoDB - done?
     Criteria c = Criteria
         .where("image").is(image)
         .andOperator(
@@ -60,27 +59,8 @@ public class MongoRepository {
   }
 
   public void insertAvailability(BookingAvailability ba) throws Exception {
-
-    logger.info("Inserting to Mongo...");
-    logger.info("Image >> " +ba.getImage());
-    logger.info("Availability >> "+ba.getAvailability());
-    logger.info("Date >> "+ba.getDate());
-
-    //mongoTemplate.insert(ba, C_BOOKING_BAY);
-    JsonObject json = Json.createObjectBuilder()
-        .add("image", ba.getImage())
-        .add("availability", ba.getAvailability())
-        .add("date", ba.getDate())
-        .build();
-    
-    logger.info(json.toString());
-    
-    mongoTemplate.insert(json.toString(), C_BOOKING_BAY);
-
-    //Document bay = Document.parse(json.toString());
-    //Document inserted = mongoTemplate.insert(bay, C_BOOKING_BAY);
-    
-    //logger.info("Inserted to MongoDB >>> "+inserted);
+    logger.info("Inserting ba into mongodb");
+    mongoTemplate.insert(ba, C_BOOKING_BAY);
   }
 
   public void updateAvailability(BookingAvailability ba) throws Exception {
@@ -94,5 +74,30 @@ public class MongoRepository {
 
     mongoTemplate.updateFirst(query, update, C_BOOKING_BAY);
   }
+
+
+
+  //public void insertAvailability(BookingAvailability ba) throws Exception {
+    // logger.info("Inserting to Mongo...");
+    // logger.info("Image >> " +ba.getImage());
+    // logger.info("Availability >> "+ba.getAvailability());
+    // logger.info("Date >> "+ba.getDate());
+
+    // //mongoTemplate.insert(ba, C_BOOKING_BAY);
+    // JsonObject json = Json.createObjectBuilder()
+    //     .add("image", ba.getImage())
+    //     .add("availability", ba.getAvailability())
+    //     .add("date", ba.getDate())
+    //     .build();
+    
+    // logger.info(json.toString());
+    
+    // mongoTemplate.insert(json.toString(), C_BOOKING_BAY);
+
+    //Document bay = Document.parse(json.toString());
+    //Document inserted = mongoTemplate.insert(bay, C_BOOKING_BAY);
+    
+    //logger.info("Inserted to MongoDB >>> "+inserted);
+  //}
   
 }

@@ -171,14 +171,32 @@ public class AngularController {
   //   }
   // }
 
-  @DeleteMapping("/deletefav")
-  public ResponseEntity<?> deleteFavourites(@RequestHeader(value = "email", required = true) String email, @RequestBody String favourite) throws Exception {
+  // @DeleteMapping("/rmvfav")
+  // public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
+  //   logger.info("remove favourite");
+  //   // logger.info("ParkingID >>> "+ parkingId);
+  //   // logger.info("Email >>> "+email);
+  //   logger.info(parkingId);
+  //   //Favourites f = Favourites.createJson(favourite);
+  //   Integer success = upRepo.deleteFavourites(parkingId, email);
 
+  //   if(success == 0) {
+  //     ErrorResponse errorResponse = new ErrorResponse();
+  //     errorResponse.setMessage("Failed to remove from favourites");
+  //     return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+  //   } else {
+  //     return ResponseEntity.ok("{\"status\":\"success\"}");
+  //   }
+  // }
+
+  @DeleteMapping(path = "/rmvfav")
+  public ResponseEntity<?> removeFavourites(@RequestHeader(value = "email", required = true) String email, @RequestHeader(value = "parkingId", required = true) String parkingId) throws Exception {
+    logger.info("remove favourite");
     // logger.info("ParkingID >>> "+ parkingId);
     // logger.info("Email >>> "+email);
-    logger.info(favourite);
-    Favourites f = Favourites.createJson(favourite);
-    Integer success = upRepo.deleteFavourites(f.getParkingId(), email);
+    logger.info(parkingId);
+    //Favourites f = Favourites.createJson(favourite);
+    Integer success = upRepo.deleteFavourites(parkingId, email);
 
     if(success == 0) {
       ErrorResponse errorResponse = new ErrorResponse();
@@ -265,8 +283,7 @@ public class AngularController {
       return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     } else {
       if(availability.equals(-10)) {
-        logger.info("here");
-        ba.setAvailability(b.getRackCount());
+        ba.setAvailability(b.getRackCount()-1);
         Integer success = upRepo.addBooking(b);
 
         if(success.equals(0)) {
@@ -317,8 +334,15 @@ public class AngularController {
   public ResponseEntity<?> deleteBooking(@RequestBody String booking, @RequestHeader(value = "token", required = true) String token, @RequestHeader(value = "name", required = true) String name) throws Exception {
     logger.info(booking);
     //TODO - delete booking
-
-
+    Bookings b = Bookings.createJson(booking);
+    Integer success = upRepo.removeBooking(b);
+    
+    BookingAvailability ba = new BookingAvailability();
+    ba.setImage(b.getImage());
+    ba.setDate(b.getBookingDate());
+    Integer currAvailability = mongoRepo.getAvailability(ba.getImage(), ba.getDate());
+    ba.setAvailability(currAvailability+1);
+    mongoRepo.updateAvailability(ba);
 
     return ResponseEntity.ok("{\"status\":\"success\"}");
   }

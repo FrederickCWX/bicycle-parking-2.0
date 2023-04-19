@@ -13,6 +13,8 @@ import com.vttp2022.BicycleParkingApp.models.mysql.UserDetails;
 
 import static com.vttp2022.BicycleParkingApp.repositories.Queries.*;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -131,8 +133,14 @@ public class UserParkingRepository {
 
     List<Bookings> bookingsList = new LinkedList<>();
 
-    while(response.next())
-      bookingsList.add(Bookings.create(response));
+    while(response.next()) {
+      Bookings b = Bookings.create(response);
+      LocalDate date = LocalDate.parse(b.getBookingDate(), DateTimeFormatter.ISO_DATE);
+      LocalDate currentDate = LocalDate.now();
+      boolean correctDate = date.isAfter(currentDate) || date.equals(currentDate);
+      if(correctDate) bookingsList.add(b);
+      else removeBooking(b);
+    }
 
     if(bookingsList.size()<=0){
       logger.info("No bookings found");
@@ -140,6 +148,10 @@ public class UserParkingRepository {
     }
 
     return bookingsList;
+  }
+
+  public Integer removeBooking(Bookings b) {
+    return jdbcTemplate.update(SQL_REMOVE_BOOKING, b.getEmail(), b.getBookingDate(), b.getImage());
   }
 
   public static List<Bookings> getTeleBooking(String email) {
