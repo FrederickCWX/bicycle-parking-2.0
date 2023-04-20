@@ -18,6 +18,9 @@
           <h3 class="text-center fw-bold">You have {{ favSize }} saved bicycle parking location(s)</h3>
         </div>
         <button [routerLink]="['/search']" class="mx-auto btn btn-secondary fs-5" style="width: auto;">Back to search</button>
+        <div *ngIf="bookingErrorMessage" class="mt-3 text-danger">
+          <h3 class="text-center fw-bold">{{ bookingErrorMessage }}</h3>
+        </div>
       </div>
       <div class="row justify-content-center d-flex align-items-center">
         <div class="card mb-3 text-center bg-transparent" style="width: 85vw;border: none; margin-top: 2%;">
@@ -28,31 +31,40 @@
             </div>
             <div class="col-md-6 d-flex align-items-center" style="border-radius: 20px; background-color: rgba(248, 249, 250, 0.8); width: auto; min-width: 600px; max-width: 45vw;">
               <div class="card-body px-0">
-                <table class="table table-responsive table-borderless my-0 mx-auto fs-5 text-start" style="width: auto; height: auto;">
-                  <tbody>
-                    <tr>
-                      <th class="col-md-3">Description: </th>
-                      <td>{{ f.description }}</td>
-                    </tr>
-                    <tr>
-                      <th class="col-md-3">Rack Type: </th>
-                      <td>{{ f.rackType }}</td>
-                    </tr>
-                    <tr>
-                      <th class="col-md-3">Rack Count: </th>
-                      <td>{{ f.rackCount }}</td>
-                    </tr>
-                    <tr>
-                      <th class="col-md-3">Sheltered bay: </th>
-                      <td>{{ f.sheltered }}</td>
-                    </tr>
-                    <tr>
-                      <td class="col-md-3" colspan="2">
-                        <button type="button" (click)="deleteFavourite(i)" class="btn btn-secondary fs-5">Remove from favourite</button>
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+                <form [formGroup]="bookingForm">
+                  <table class="table table-responsive table-borderless my-0 mx-auto fs-5 text-start" style="width: auto; height: auto;">
+                    <tbody>
+                      <tr>
+                        <th class="col-md-5">Description: </th>
+                        <td>{{ f.description }}</td>
+                      </tr>
+                      <tr>
+                        <th class="col-md-5">Rack Type: </th>
+                        <td>{{ f.rackType }}</td>
+                      </tr>
+                      <tr>
+                        <th class="col-md-5">Rack Count: </th>
+                        <td>{{ f.rackCount }}</td>
+                      </tr>
+                      <tr>
+                        <th class="col-md-5">Sheltered bay: </th>
+                        <td>{{ f.sheltered }}</td>
+                      </tr>
+                      <tr class="mb-1">
+                        <th class="col-md-5">Booking Date: </th>
+                        <td><input type="date" class="bg-transparent" formControlName="date"></td>
+                      </tr>
+                      <tr>
+                        <th class="col-md-5">
+                          <button type="button" (click)="deleteFavourite(i)" class="btn btn-secondary fs-5">Remove from favourite</button>
+                        </th>
+                        <td class="col-md-6">
+                          <button type="button" class="btn btn-secondary fs-5" (click)="processBooking(i)" [disabled]="bookingForm.invalid">Book a rack</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </form>
               </div>
             </div>
           </div>

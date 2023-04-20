@@ -1,6 +1,7 @@
 package com.vttp2022.BicycleParkingApp.services;
 
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,7 +33,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         String command = update.getMessage().getText();
 
         if(command.equals("/help")) {
-            String message = "Enter a postal code to search for bicycle parking bays located within 250metres of the postal code!";
+            String message = "Enter a postal code to search for the nearest bicycle parking bays (in increments of 50metres) of the postal code!";
             SendMessage response = new SendMessage();
             response.setChatId(update.getMessage().getChatId().toString());
             response.setText(message);
@@ -78,6 +79,8 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     public String searchBP(String postal) {
         String message = "";
+        Double km = 0.05;
+        Integer metres = 50;
         while(true) {
             Query q = new Query();
             Optional<Postal> optPostal = PostalAPIService.getPostalDetails(Integer.valueOf(postal));
@@ -86,27 +89,34 @@ public class TelegramBot extends TelegramLongPollingBot {
                 message = "Please enter a valid postal code";
                 break;
             }
+            List<Value> val = new LinkedList<>();
 
             List<Results> results = Postal.getResults();
             if(results.size() >= 1){
-            q.setLat(results.get(0).getLatitude());
-            q.setLng(results.get(0).getLongitude());
+                q.setLat(results.get(0).getLatitude());
+                q.setLng(results.get(0).getLongitude());
             }
-            q.setRadius(0.25);
+            while(true){
+                q.setRadius(km);
+                Optional<Parkings> optParking = ParkingAPIService.findParking(q);
+                // logger.info("Optional Parking - "+optParking.toString());
+                // if(optParking.isEmpty()) {
+                //     message = "There are no bicycle parking bays located within 150m of Singapore "+postal;
+                //     break;
+                // }
 
-            Optional<Parkings> optParking = ParkingAPIService.findParking(q);
-            if(optParking.isEmpty()) {
-                message = "There are no bicycle parking bays located within 250m of Singapore "+postal;
-                break;
+                Collections.sort(Parkings.getValue(), new SortByDistance());
+                val = Parkings.getValue();
+                if(val.size()>0) break;
+                km = km+0.05;
+                metres = metres+50;
             }
-
-            Collections.sort(Parkings.getValue(), new SortByDistance());
-            List<Value> val = Parkings.getValue();
-
             StringBuilder sb = new StringBuilder();
             sb.append("There are ");
             sb.append(val.size());
-            sb.append(" bicycle parking bay(s) located within 250m of Singapore ");
+            sb.append(" bicycle parking bay(s) located within ");
+            sb.append(metres);
+            sb.append("m of Singapore ");
             sb.append(postal);
             sb.append(":");
             for(Value v: val) {
