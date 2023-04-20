@@ -251,7 +251,7 @@ public class AngularController {
     }
 
     wnSvc.sendNotification(token, "bookings");
-    //emailSvc.bookingConfirmationEmail(name, b);
+    emailSvc.bookingConfirmationEmail(name, b);
     return ResponseEntity.ok("{\"status\":\"success\"}");
     
   }

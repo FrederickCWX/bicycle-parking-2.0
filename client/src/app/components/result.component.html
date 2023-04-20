@@ -25,42 +25,42 @@
         <div class="card mb-3 text-center bg-transparent" style="width: 85vw; border: none; margin-top: 2%;">
           <div class="row pt-auto" *ngFor="let r of results; let i = index" style="margin-top: 30px;">
             <div class="col-md-6">
-              <img src= "{{ r.image }}" class="img-fluid rounded" style="height: 350px; width: 500px">
+              <img src= "{{ r.image }}" class="img-fluid rounded" style="height: 350px; width: 450px">
             </div>
-            <div class="col-md-6 d-flex align-items-center" style="border-radius: 20px; background-color: rgba(248, 249, 250, 0.8); width: auto; min-width: 600px; max-width: 45vw;">
+            <div class="col-md-6 d-flex align-items-center" style="border-radius: 15px; background-color: rgba(248, 249, 250, 0.8); width: auto; min-width: 600px; width: 40vw;">
               <div class="card-body px-0">
                 <form [formGroup]="bookingForm">
                   <table class="table table-responsive table-borderless my-0 mx-auto fs-5 text-start" style="width: auto; height: auto;">
                     <tbody>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Description: </th>
                         <td>{{ r.description }}</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Distance: </th>
                         <td>{{ r.distance }} metres</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Rack Type: </th>
                         <td>{{ r.rackType }}</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Total Rack Count: </th>
                         <td>{{ r.rackCount }}</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Current Available Racks: </th>
                         <td>{{ r.availability }}</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Sheltered bay: </th>
                         <td>{{ r.sheltered }}</td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">Booking Date: </th>
                         <td><input type="date" class="bg-transparent" formControlName="date"></td>
                       </tr>
-                      <tr>
+                      <tr class="mb-1">
                         <th class="col-md-5">
                           <button type="button" (click)="saveFavourites(i)" class="btn btn-secondary fs-5">Add to favourite</button>
                         </th>

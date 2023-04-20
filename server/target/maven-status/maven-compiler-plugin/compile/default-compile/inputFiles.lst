@@ -10,11 +10,9 @@
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/ErrorResponse.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Parkings.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Value.java
-/Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/services/Tele.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mongodb/BookingAvailability.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mysql/UserParking.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/parking/Query.java
-/Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/User.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/repositories/UserParkingRepository.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mysql/Bookings.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/services/PostalAPIService.java
@@ -22,7 +20,6 @@
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/models/mysql/UserDetails.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/repositories/MongoRepository.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/controller/AngularController.java
-/Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/controller/AngularFavouritesController.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/services/WebNotificationService.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/utilities/CalculateDistance.java
 /Users/zafian/Desktop/final-project-test/server/src/main/java/com/vttp2022/BicycleParkingApp/services/EmailSenderService.java

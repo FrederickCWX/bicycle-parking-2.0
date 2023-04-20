@@ -31,9 +31,8 @@ public class WebNotificationService {
 
   public void sendNotification(String token, String service) throws Exception{
 
-    //String authorization = System.getenv("FIREBASE_NOTIFICATION_AUTHORIZATION");
+    String authorization = System.getenv("FIREBASE_NOTIFICATION_AUTHORIZATION");
     //@Value("${firebase.notification.authorization}")
-    String authorization = "key=AAAAbUkHut0:APA91bHeLu6N0vKNoNN38-tL1pLgx1pXuPzHK0wEXR5C1TdlCo90nYMhroLbwD_peYBa6qwk1tWfDYbeit7znxnDtyIIok5bDLx0R8iRzQSsNuF_wSFfV9CTMbvUyEBrF1UzO98PdpE7";
 
     RestTemplate template = new RestTemplate();
     ResponseEntity<String> response = null;
